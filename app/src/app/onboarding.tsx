@@ -95,7 +95,7 @@ const SLIDES: Slide[] = [
     key: 'how',
     Illustration: CairnStackIllustration,
     title: 'Five pieces. Any three bring it back.',
-    body: `We split your phrase into five pieces. You give one to each person you trust. No single piece reveals anything. Any three of them, together, rebuild your phrase exactly.`,
+    body: `We split your phrase into five pieces. You give one to each of your trusted people. No single piece reveals anything. Any three of them, together, rebuild your phrase exactly.`,
     link: 'Change these numbers',
   },
   {
