@@ -36,7 +36,13 @@
           "imageWidth": 90
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "react-native-nfc-manager",
+        {
+          "nfcPermission": "Used to write and read the pieces of your seed phrase on NFC cards."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
