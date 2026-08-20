@@ -4,6 +4,22 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-
 import { SLIP39_WORDLIST } from '@/lib/slip39/wordlist';
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
+/**
+ * Well-known public BIP-39 test vectors - safe as a
+ * placeholder "Use an example phrase" fill, since they're not anyone's
+ * real secret. 
+ * 
+ * see: https://github.com/trezor/python-mnemonic/blob/master/vectors.json
+ */
+export const EXAMPLE_PHRASES: Record<12 | 24, string[]> = {
+  12: 'vessel ladder alter error federal sibling chat ability sun glass valve picture'.split(
+    ' ',
+  ),
+  24: 'void come effort suffer camp survey warrior heavy shoot primary clutch crush open amazing screen patrol group space point ten exist slush involve unfold'.split(
+    ' ',
+  ),
+};
+
 type EnterStepProps = {
   wordLength: 12 | 24;
   onChangeWordLength: (length: 12 | 24) => void;
