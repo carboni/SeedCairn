@@ -86,22 +86,23 @@ const SLIDES: Slide[] = [
     key: 'who',
     Illustration: TrustCircleIllustration,
     title: 'Keep something precious with the people you trust.',
-    body: "Your seed phrase is the only key to your wallet. Lose it and it's gone; let one person see all of it and so is your money. There is a better way than hiding a single copy.",
+    body: "Your seed phrase is the key to your wallet. Lose it and it's gone. If someone finds it, so is your money. There's a better way than hiding a single copy.",
   },
   {
     key: 'how',
     Illustration: CairnStackIllustration,
     title: 'Five pieces. Any three bring it back.',
-    body: 'We split your phrase into five pieces and you give one to each person you trust. No single piece reveals anything. Three of them, together, rebuild the phrase exactly.',
+    body: `We split your phrase into five pieces. You give one to each person you trust. No single piece reveals anything. Any three of them, together, rebuild your phrase exactly.`,
     link: 'Change these numbers',
   },
   {
     key: 'where',
     Illustration: NfcCardIllustration,
     title: 'Written onto things you can hold.',
-    body: 'Tap each piece onto an NFC card, print it, or stamp it into metal. Nothing is sent anywhere and nothing is stored — this app remembers nothing between uses.',
+    body: 'Tap each piece onto an NFC card, print it, or stamp it into metal. Nothing is sent anywhere and nothing about your phrase is stored. This app remembers none of it between uses.',
+    link: 'Set a reminder',
     footnote:
-      "Once a year we'll suggest a quick drill, so you find out your backup works long before you need it.",
+      "Once a year we can suggest a quick drill, so you can check your backup works long before you need it.",
   },
 ];
 
@@ -153,12 +154,12 @@ export default function OnboardingScreen() {
                 <slide.Illustration />
                 <Text style={styles.title}>{slide.title}</Text>
                 <Text style={styles.body}>{slide.body}</Text>
+                {slide.footnote && <Text style={styles.footnote}>{slide.footnote}</Text>}
                 {slide.link && (
                   <Pressable hitSlop={8}>
                     <Text style={styles.link}>{slide.link}</Text>
                   </Pressable>
                 )}
-                {slide.footnote && <Text style={styles.footnote}>{slide.footnote}</Text>}
               </View>
             ))}
           </ScrollView>
