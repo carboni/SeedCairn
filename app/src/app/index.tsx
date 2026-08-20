@@ -78,7 +78,7 @@ export default function HomeScreen() {
           <SafeAreaView edges={['bottom']}>
             <Text style={styles.trustText}>
               <Text style={styles.trustTextBold}>Nothing ever leaves your phone.</Text> This app
-              backs up your seed phrase (BIP&#8209;39) using Shamir Secret Sharing (SLIP&#8209;39).
+              secures your seed phrase (BIP&#8209;39) using Shamir Secret Sharing (SLIP&#8209;39).
               The code is open source so you can verify it:{' '}
               <ExternalLink
                 href="https://github.com/carboni/seed-phrase-backup"
