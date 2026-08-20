@@ -1,6 +1,8 @@
 import { SymbolView } from 'expo-symbols';
 import { useRef, useState } from 'react';
 import {
+  Alert,
+  Linking,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
   Pressable,
@@ -15,6 +17,7 @@ import Svg, { Circle, Ellipse, Path, Rect } from 'react-native-svg';
 import { CairnMark } from '@/components/cairn-mark';
 import { ArchivoFonts, MaxContentWidth, Palette, Spacing } from '@/constants/theme';
 import { useOnboarding } from '@/contexts/onboarding-context';
+import { scheduleAnnualBackupDrillReminder } from '@/lib/backup-drill-reminder';
 
 function TrustCircleIllustration() {
   return (
@@ -111,7 +114,38 @@ export default function OnboardingScreen() {
   const scrollRef = useRef<ScrollView>(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const [index, setIndex] = useState(0);
+  const [reminderBusy, setReminderBusy] = useState(false);
+  const [reminderSet, setReminderSet] = useState(false);
   const isLast = index === SLIDES.length - 1;
+
+  const handleSetReminder = async () => {
+    if (reminderBusy) return;
+    setReminderBusy(true);
+    try {
+      const result = await scheduleAnnualBackupDrillReminder();
+      if (result === 'scheduled') {
+        setReminderSet(true);
+        return;
+      }
+      if (result === 'denied') {
+        Alert.alert(
+          'Notifications are off',
+          'Enable notifications for SeedCairn in Settings to get a yearly backup drill reminder.',
+          [
+            { text: 'Not now', style: 'cancel' },
+            { text: 'Open Settings', onPress: () => void Linking.openSettings() },
+          ],
+        );
+        return;
+      }
+      Alert.alert(
+        'Reminders need a phone',
+        'Yearly backup drills can be scheduled on iOS and Android.',
+      );
+    } finally {
+      setReminderBusy(false);
+    }
+  };
 
   const goTo = (i: number) => {
     scrollRef.current?.scrollTo({ x: i * containerWidth, animated: true });
@@ -156,8 +190,13 @@ export default function OnboardingScreen() {
                 <Text style={styles.body}>{slide.body}</Text>
                 {slide.footnote && <Text style={styles.footnote}>{slide.footnote}</Text>}
                 {slide.link && (
-                  <Pressable hitSlop={8}>
-                    <Text style={styles.link}>{slide.link}</Text>
+                  <Pressable
+                    hitSlop={8}
+                    disabled={slide.key === 'where' && reminderBusy}
+                    onPress={slide.key === 'where' ? handleSetReminder : undefined}>
+                    <Text style={styles.link}>
+                      {slide.key === 'where' && reminderSet ? 'Reminder set' : slide.link}
+                    </Text>
                   </Pressable>
                 )}
               </View>

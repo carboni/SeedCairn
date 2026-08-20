@@ -11,6 +11,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { Palette } from '@/constants/theme';
 import { OnboardingProvider, useOnboarding } from '@/contexts/onboarding-context';
+import { registerBackupDrillNotificationHandler } from '@/lib/backup-drill-reminder';
+
+registerBackupDrillNotificationHandler();
 
 SplashScreen.preventAutoHideAsync();
 
