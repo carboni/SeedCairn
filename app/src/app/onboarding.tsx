@@ -89,7 +89,7 @@ const SLIDES: Slide[] = [
     key: 'who',
     Illustration: TrustCircleIllustration,
     title: 'Keep something precious with the people you trust.',
-    body: "Your seed phrase is the key to your wallet. Lose it and it's gone. If someone finds it, so is your money. There's a better way than hiding a single copy.",
+    body: "Your seed phrase is the key to your wallet. Lose it and it's gone. If someone finds it, so is your money. There's a better way than hiding a copy.",
   },
   {
     key: 'how',
