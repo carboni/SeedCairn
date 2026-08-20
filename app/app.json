@@ -7,6 +7,13 @@
     "icon": "./assets/images/icon.png",
     "scheme": "seedcairn",
     "userInterfaceStyle": "automatic",
+    "ios": {
+      "icon": {
+        "light": "./assets/images/ios-icon-light.png",
+        "dark": "./assets/images/ios-icon-dark.png",
+        "tinted": "./assets/images/ios-icon-tinted.png"
+      }
+    },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#1b1d1c",

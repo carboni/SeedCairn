@@ -7,19 +7,21 @@ type CairnMarkProps = {
 };
 
 /**
- * Four stacked stones, ochre top stone standing in for the seed —
- * the wordmark glyph used throughout the SeedCairn design draft.
+ * Four stacked stones, ochre top stone standing in for the seed — the
+ * wordmark glyph used throughout the SeedCairn design draft. Geometry is
+ * ported exactly from the design project's mark-transparent.svg (a
+ * 1024x1024 source, cropped here to its content bounding box).
  */
 export function CairnMark({ size = 22 }: CairnMarkProps) {
   const width = size;
-  const height = (size * 26) / 22;
+  const height = (size * 621.4) / 511.2;
 
   return (
-    <Svg width={width} height={height} viewBox="0 0 22 26" fill="none">
-      <Ellipse cx={11} cy={22.2} rx={9} ry={2.6} fill={Palette.borderStrong} />
-      <Ellipse cx={11} cy={16.6} rx={7} ry={2.4} fill={Palette.borderStrong} />
-      <Ellipse cx={11} cy={11.4} rx={5.2} ry={2.2} fill={Palette.borderStrong} />
-      <Ellipse cx={11} cy={6.6} rx={3.4} ry={2} fill={Palette.ochre} />
+    <Svg width={width} height={height} viewBox="0 0 511.2 621.4" fill="none">
+      <Ellipse cx={255.6} cy={545.5} rx={255.6} ry={75.9} fill={Palette.borderStrong} />
+      <Ellipse cx={255.6} cy={369.8} rx={195.7} ry={65.5} fill={Palette.borderStrong} />
+      <Ellipse cx={255.6} cy={210.1} rx={139.8} ry={55.9} fill={Palette.borderStrong} />
+      <Ellipse cx={255.6} cy={46.3} rx={83.9} ry={46.3} fill={Palette.ochre} />
     </Svg>
   );
 }
