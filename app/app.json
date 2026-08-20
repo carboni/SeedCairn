@@ -37,6 +37,14 @@
     "plugins": [
       "expo-router",
       [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/android-icon-monochrome.png",
+          "color": "#d8a75a",
+          "defaultChannel": "backup-drill"
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#1b1d1c",
