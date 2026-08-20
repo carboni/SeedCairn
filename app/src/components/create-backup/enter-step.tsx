@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { EXAMPLE_PHRASES, SAMPLE_WORDLIST } from '@/components/create-backup/example-phrases';
+import { SLIP39_WORDLIST } from '@/lib/slip39/wordlist';
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
 type EnterStepProps = {
@@ -46,7 +46,7 @@ export function EnterStep({
   };
 
   const suggestions = draft.trim()
-    ? SAMPLE_WORDLIST.filter((w) => w.startsWith(draft.trim().toLowerCase())).slice(0, 3)
+    ? SLIP39_WORDLIST.filter((w) => w.startsWith(draft.trim().toLowerCase())).slice(0, 3)
     : [];
 
   const isComplete = words.length === wordLength;
