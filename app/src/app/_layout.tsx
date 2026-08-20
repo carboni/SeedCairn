@@ -45,10 +45,7 @@ function RootNavigator() {
 
       <Stack.Protected guard={hasCompletedOnboarding}>
         <Stack.Screen name="index" />
-        <Stack.Screen
-          name="new-backup"
-          options={{ headerShown: true, title: 'New Backup', presentation: 'modal' }}
-        />
+        <Stack.Screen name="new-backup" options={{ presentation: 'modal' }} />
         <Stack.Screen
           name="restore"
           options={{ headerShown: true, title: 'Restore', presentation: 'modal' }}
@@ -58,7 +55,14 @@ function RootNavigator() {
   );
 }
 
-export default function RootLayout() {
+/**
+ * Waits for fonts and the persisted onboarding flag before mounting
+ * anything (and thus before AnimatedSplashOverlay's first onLayout hides
+ * the native splash) — otherwise returning users could flash onto the
+ * onboarding screen before the persisted "seen it" value loads.
+ */
+function AppGate() {
+  const { isReady } = useOnboarding();
   const [fontsLoaded] = useFonts({
     Archivo_400Regular,
     Archivo_500Medium,
@@ -66,15 +70,23 @@ export default function RootLayout() {
     Archivo_700Bold,
   });
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || !isReady) {
     return null;
   }
 
   return (
-    <ThemeProvider value={AppNavigationTheme}>
+    <>
       <AnimatedSplashOverlay />
+      <RootNavigator />
+    </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider value={AppNavigationTheme}>
       <OnboardingProvider>
-        <RootNavigator />
+        <AppGate />
       </OnboardingProvider>
     </ThemeProvider>
   );

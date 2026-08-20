@@ -154,10 +154,7 @@ const styles = StyleSheet.create({
   },
   primaryCard: {
     backgroundColor: Palette.action,
-    shadowColor: Palette.stoneDark,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
+    boxShadow: `0px 6px 10px 0px ${Palette.stoneDark}40`,
     elevation: 3,
   },
   secondaryCard: {

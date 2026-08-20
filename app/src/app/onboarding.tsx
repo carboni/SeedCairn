@@ -132,7 +132,7 @@ export default function OnboardingScreen() {
             <Text style={styles.brandText}>SeedCairn</Text>
           </View>
           {!isLast && (
-            <Pressable onPress={() => goTo(SLIDES.length - 1)} hitSlop={12}>
+            <Pressable onPress={completeOnboarding} hitSlop={12}>
               <Text style={styles.skipText}>Skip</Text>
             </Pressable>
           )}
