@@ -290,3 +290,9 @@ npm start
 A development build (not Expo Go) is required now that a native module
 (NFC) is configured — see "Development build" above and
 [`app/AGENTS.md`](app/AGENTS.md) for Expo SDK version notes.
+
+## License
+
+Source is published for verification — you can read it, clone it, and build
+and run your own copy. It is not open source: no redistribution, and no
+reuse in other products. See [`LICENSE`](LICENSE).
