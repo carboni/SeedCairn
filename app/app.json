@@ -23,7 +23,8 @@
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "android.permission.NFC"
-      ]
+      ],
+      "package": "io.carboni.seedcairn"
     },
     "web": {
       "output": "static",
@@ -50,6 +51,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c105f4e4-32d6-4533-849b-cdd6f69f4baa"
+      }
     }
   }
 }
