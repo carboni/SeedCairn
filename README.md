@@ -21,7 +21,7 @@ to be read directly by project ID, and (as far as I can tell) can only be
 design-system projects specifically. So design iteration stays in Claude
 Design; I read from there, I don't push to it.
 
-Two files there matter most:
+Files there that matter:
 
 - `product-notes.md` — naming, palette, voice, and product-principle
   decisions (source of truth for anything not obvious from the mockups)
@@ -30,6 +30,10 @@ Two files there matter most:
   verify → name 5 people → write to NFC/print/stamp → done) — now built out
   in the app below. Turn 5 (option 5a) is the 3-screen onboarding + home
   screen.
+- `App Icon & Splash.dc.html` + `assets/brand/` — the real icon/splash art:
+  three iOS appearances (light/dark/tinted), a two-layer version for Icon
+  Composer, Android adaptive-icon layers, splash art, and vector sources in
+  `assets/brand/svg/`. Pulled into the app below (see "App icons").
 
 Brand: fixed palette (not OS light/dark adaptive) — near-black stone
 `#1b1d1c` header, warm stone sheet `#eae7e1` content, slate blue `#2f5f72` as
@@ -79,9 +83,53 @@ for the generated Expo template README.
     vector for "Use an example phrase" — both placeholders.
   - `src/app/restore.tsx` — still the placeholder screen; the draft doesn't
     prototype a recover flow yet either
-- `src/components/cairn-mark.tsx` — the stacked-stones brand mark (SVG)
+- `src/components/cairn-mark.tsx` — the stacked-stones brand mark (SVG),
+  geometry ported exactly from the design project's `mark-transparent.svg`
 - `src/constants/theme.ts` — `Palette` (fixed brand colors) and
   `ArchivoFonts` (loaded via `@expo-google-fonts/archivo` in `_layout.tsx`)
+
+### App icons
+
+Pulled from the design project's `assets/brand/` (see Design, above) and
+regenerated through a small Playwright render script using the *exact*
+vector coordinates from `assets/brand/svg/mark-transparent.svg` — same
+shapes, same colors, not a hand-approximation:
+
+- `app.json` → `icon` (generic fallback) and `ios.icon.{light,dark,tinted}`
+  — the three iOS appearances, wired directly with flat PNGs. No Icon
+  Composer needed for this.
+- `android.adaptiveIcon` — foreground + monochrome layers, mark held inside
+  the 264px safe zone on a 432px canvas per the design spec; background is
+  the flat `#1b1d1c` via `backgroundColor` rather than an image.
+- `expo-splash-screen` — mark alone, transparent, sized to the ~66.7% safe
+  margin the design calls out for Android 12+'s 240dp circle splash trim
+  (reused for both platforms rather than risking iOS-only art getting
+  clipped on Android).
+- `assets/icon-composer-source/` — `layer-stones-1024.png` +
+  `layer-seed-1024.png`, two transparent layers on identical 1024
+  registration, staged for anyone who wants to build the richer *layered*
+  iOS icon (see below). Not wired into `app.json` yet.
+
+**Upgrading to the layered iOS icon** (optional — the flat trio above
+already gives full light/dark/tinted support without this):
+
+1. Open **Icon Composer** (macOS 26 / Xcode 26+).
+2. Import `layer-stones-1024.png` as the bottom layer, `layer-seed-1024.png`
+   as a layer above it (both from `assets/icon-composer-source/`).
+3. Set the canvas background fill to flat `#1b1d1c` (no gradient — matches
+   the design's "all art is flat vector" direction).
+4. Optionally give the seed layer a subtle specular pass so it reads as
+   floating above the stones, per the design notes.
+5. Preview across light/dark/tinted/clear in Icon Composer's preview pane.
+6. Export as a `.icon` bundle, copy it into `app/assets/expo.icon/`.
+7. In `app.json`, replace `ios.icon`'s `{light, dark, tinted}` object with
+   `ios.icon: "./assets/expo.icon"` (a bundle path supersedes the flat trio
+   — Expo's schema takes one or the other, not both).
+8. Re-run `npx expo prebuild --clean` (or rebuild the dev client) to pick it
+   up.
+
+`play-store-512.png` (design project only, not pulled into the repo) is a
+manual Play Console upload, not something `app.json` references.
 
 ### Web
 
@@ -109,30 +157,92 @@ because of two real constraints, not just preference:
 Neither of these is implemented yet — this is the plan, to build when the
 web build is actually being shipped.
 
-### Next steps
+### Crypto & NFC libraries
 
-- Crypto: BIP-39 / SLIP-39 splitting and recovery, likely via
-  [`@fintoda/react-native-crypto-lib`](https://github.com/fintoda/react-native-crypto-lib)
-  (trezor-crypto C core) — native code, so a development build is needed
-  pretty much immediately (see below)
-- NFC read/write for shares (native only)
-- Recover flow (no draft prototype to follow yet — will need its own design
-  pass, or can mirror the create flow's steps in reverse)
-- Web-specific behavior described above (print-only write step, trust
-  notice, maybe PWA offline support)
-- App icons: a flat first-pass (cairn mark on stone-dark) is in place for
-  the app icon, favicon, splash, and Android adaptive icon (incl.
-  monochrome variant), generated from the same SVG as `cairn-mark.tsx` via
-  a Playwright render script. iOS's layered "Icon Composer" format
-  (previously `assets/expo.icon/`, now removed) is dropped in favor of this
-  flat icon for now — a polished layered version is a Claude Design task
-  for closer to shipping, not something worth hand-authoring blind.
+Researched rather than guessed at — `@fintoda/react-native-crypto-lib` (the
+original ChatGPT suggestion) turned out to be real and functionally
+complete (wraps trezor-crypto, exposes both BIP-39 and SLIP-39), but has
+essentially no adoption (36 weekly npm downloads, 2 GitHub stars, unaudited)
+— not something to trust with real seed phrases. Decisions made instead:
 
-#### Development build
+- **BIP-39**: [`@scure/bip39`](https://www.npmjs.com/package/@scure/bip39)
+  — installed. Audited (cure53, 2022), part of the noble/scure ecosystem,
+  7M weekly downloads, pure JS/TS (works without a dev client, unlike a
+  native crypto module).
+- **NFC**: [`react-native-nfc-manager`](https://github.com/revtel/react-native-nfc-manager)
+  — installed, with its Expo config plugin wired into `app.json`
+  (`nfcPermission` set). 1.6k GitHub stars, actively maintained, standard
+  choice. Caveats: iOS NDEF write is real but foreground-only (Core NFC
+  constraint, not a library limitation); New Architecture support is
+  maturing through a 4.0 beta — test on-device against RN 0.86 New
+  Architecture before relying on it, and watch for the 4.0 release.
+- **SLIP-39**: implemented from spec — `src/lib/slip39/` (see below). Given
+  the lack of a maintained audited library, and that this is the one place a
+  bug directly threatens someone's wallet, you chose to build to spec rather
+  than vendor `slip39-js`.
 
-Not set up yet, but `../hairtracker/app` and `../education/app` (sibling
-repos) have a consistent `eas.json` + `package.json` convention worth
-reusing rather than reinventing:
+### SLIP-39 implementation (`app/src/lib/slip39/`)
+
+Built directly against SatoshiLabs' [SLIP-0039](https://github.com/satoshilabs/slips/blob/master/slip-0039.md)
+spec and cross-checked line-by-line against the reference Python
+implementation ([`trezor/python-shamir-mnemonic`](https://github.com/trezor/python-shamir-mnemonic))
+— not just the spec prose, which turned out to have at least one
+paraphrase-level ambiguity (the PBKDF2 iteration-count formula) that only
+the actual reference source resolved unambiguously. Built on `@noble/hashes`
+(sha256/hmac/pbkdf2) and `expo-crypto` for CSPRNG — no unaudited crypto
+dependency.
+
+- `wordlist.ts` — the official 1024-word list, downloaded verbatim (an
+  LLM-summarized fetch of the same file misidentified it as BIP-39 and
+  refused to reproduce it — pulled directly via `curl` instead, since it's
+  published open-standard data, not sensitive content)
+- `rs1024.ts` — the checksum (customization string `"shamir"` /
+  `"shamir_extendable"`)
+- `gf256.ts` — GF(256) field arithmetic (Rijndael polynomial) and Lagrange
+  interpolation, used by Shamir splitting
+- `shamir.ts` — raw-byte Shamir split/recover, including the digest-share
+  (HMAC-based tamper/mismatch detection) at index 254
+- `feistel.ts` — the 4-round Feistel cipher that encrypts the master secret
+  with an optional passphrase
+- `mnemonic.ts` — bit-packing shares to/from the actual word sequences
+- `slip39.ts` — the two-level (group-of-groups, then members) orchestration:
+  `generateMnemonics` / `combineMnemonics` / `decodeMnemonics`
+- `__tests__/` — validated against **all 45 official test vectors** (both
+  the valid-recovery cases and the deliberately-invalid ones: bad checksums,
+  mismatched groups/thresholds, tampered digests, wrong padding, the
+  extendable-backup variant) plus its own round-trip tests (generate →
+  combine, multi-group, passphrase, threshold-not-met). All 53 pass
+  (`npm test`).
+  - One real gotcha hit along the way: the official vectors are combined
+    with passphrase `"TREZOR"` by convention (per the reference repo's own
+    `test_shamir.py`), not empty — an early run against empty passphrase
+    produced consistently wrong secrets and looked like a crypto bug, until
+    cross-checking against a locally-installed copy of the actual Python
+    package (which produced the identical "wrong" result with empty
+    passphrase) isolated it to the test harness, not the implementation.
+
+Not yet wired into the UI — `enter-step`/`check-step` in the create-backup
+flow still use placeholder validation and a hardcoded sample wordlist. That
+wiring, plus the BIP-39 side via `@scure/bip39`, is the next step.
+
+### Development build
+
+**Installed**: `expo-dev-client`, `react-native-nfc-manager` (config plugin
+wired in `app.json`), `@scure/bip39`. Expo Go can no longer run this app
+now that a native module (NFC) is configured.
+
+**Not done yet** (needs a real device/Xcode/Android Studio, which this
+environment doesn't have): actually building the dev client. Once ready:
+
+```bash
+npx expo prebuild        # generates ios/ and android/ native projects
+npx expo run:ios         # or run:android — builds and installs the dev client
+npx expo start --dev-client
+```
+
+`../hairtracker/app` and `../education/app` (sibling repos) have a
+consistent `eas.json` + `package.json` convention worth reusing rather than
+reinventing for the actual build pipeline:
 
 - `eas.json` build profiles: `development` (developmentClient, internal
   distribution, iOS simulator build), `development-iphone` (physical device,
@@ -143,6 +253,19 @@ reusing rather than reinventing:
   --local` for dev builds (skips the EAS cloud queue), `maestro` for UI
   e2e tests, `inspect` for build-archive introspection
 
+### Next steps
+
+- Wire the now-implemented BIP-39/SLIP-39 logic into the create-backup flow
+  (replacing the placeholder word-entry validation and example phrase in
+  `enter-step`/`check-step`)
+- Build the dev client (`expo prebuild` + `expo run:ios`/`run:android`) and
+  wire real NFC read/write into the write step
+- Recover flow (no draft prototype to follow yet — will need its own design
+  pass, or can mirror the create flow's steps in reverse)
+- Web-specific behavior described above (print-only write step, trust
+  notice, maybe PWA offline support)
+- Layered iOS Icon Composer upgrade (optional, see App icons above)
+
 ## Development
 
 ```bash
@@ -151,5 +274,6 @@ npm install
 npm start
 ```
 
-Requires a development build (not Expo Go) once native modules (crypto, NFC)
-land — see [`app/AGENTS.md`](app/AGENTS.md) for Expo SDK version notes.
+A development build (not Expo Go) is required now that a native module
+(NFC) is configured — see "Development build" above and
+[`app/AGENTS.md`](app/AGENTS.md) for Expo SDK version notes.
