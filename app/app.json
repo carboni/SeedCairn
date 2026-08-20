@@ -12,6 +12,10 @@
         "light": "./assets/images/ios-icon-light.png",
         "dark": "./assets/images/ios-icon-dark.png",
         "tinted": "./assets/images/ios-icon-tinted.png"
+      },
+      "bundleIdentifier": "io.carboni.seedcairn",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
