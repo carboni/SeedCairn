@@ -170,12 +170,25 @@ essentially no adoption (36 weekly npm downloads, 2 GitHub stars, unaudited)
   7M weekly downloads, pure JS/TS (works without a dev client, unlike a
   native crypto module).
 - **NFC**: [`react-native-nfc-manager`](https://github.com/revtel/react-native-nfc-manager)
-  — installed, with its Expo config plugin wired into `app.json`
-  (`nfcPermission` set). 1.6k GitHub stars, actively maintained, standard
-  choice. Caveats: iOS NDEF write is real but foreground-only (Core NFC
-  constraint, not a library limitation); New Architecture support is
-  maturing through a 4.0 beta — test on-device against RN 0.86 New
-  Architecture before relying on it, and watch for the 4.0 release.
+  — installed on the **`4.0.0-beta.7`** line, not the `3.17.2` "latest"
+  stable. This isn't just a version-pinning preference: the library's own
+  README states plainly that **v3 only supports the legacy architecture and
+  v4 (beta) is the New Architecture line**. RN 0.86 has no legacy-architecture
+  option at all (removed in RN 0.82) — so 3.x would very likely not work in
+  this app, not merely be "untested." The beta hasn't shipped a new release
+  in ~8 months and has at least one known open New-Architecture bug
+  ([#833](https://github.com/revtel/react-native-nfc-manager/issues/833),
+  iOS `getTag()` double-callback), so it's a real beta, not just a version
+  number — worth watching on-device. `expo-doctor`'s "untested on New
+  Architecture" warning is suppressed in `package.json`
+  (`expo.doctor.reactNativeDirectoryCheck.exclude`) since React Native
+  Directory's registry doesn't track compatibility per-version and can't
+  yet know beta.7 is the New-Architecture-targeted release — the warning
+  was about the package as a whole, not a signal against this specific
+  version. Config plugin API (`nfcPermission`, etc.) is unchanged between
+  3.x and 4.0-beta, so the existing `app.json` config needed no changes.
+  iOS NDEF write is real but foreground-only regardless of version (a Core
+  NFC constraint, not a library limitation).
 - **SLIP-39**: implemented from spec — `src/lib/slip39/` (see below). Given
   the lack of a maintained audited library, and that this is the one place a
   bug directly threatens someone's wallet, you chose to build to spec rather
