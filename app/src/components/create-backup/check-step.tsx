@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { validateMnemonic } from '@scure/bip39';
+import { wordlist as BIP39_WORDLIST } from '@scure/bip39/wordlists/english.js';
+import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
@@ -12,6 +14,11 @@ type CheckStepProps = {
 export function CheckStep({ words, onNext, onBack }: CheckStepProps) {
   const [revealAll, setRevealAll] = useState(false);
   const [heldIndex, setHeldIndex] = useState<number | null>(null);
+
+  const isValid = useMemo(
+    () => words.length > 0 && validateMnemonic(words.join(' '), BIP39_WORDLIST),
+    [words],
+  );
 
   return (
     <View style={styles.container}>
@@ -47,15 +54,18 @@ export function CheckStep({ words, onNext, onBack }: CheckStepProps) {
         })}
       </ScrollView>
 
-      <View style={styles.validityBox}>
-        <Text style={styles.validityCheck}>✓</Text>
-        <Text style={styles.validityText}>
-          {words.length} words. This looks like a real phrase — full validation lands with the
-          real crypto integration.
+      <View style={[styles.validityBox, !isValid && styles.validityBoxInvalid]}>
+        <Text style={[styles.validityCheck, !isValid && styles.validityCheckInvalid]}>
+          {isValid ? '✓' : '!'}
+        </Text>
+        <Text style={[styles.validityText, !isValid && styles.validityTextInvalid]}>
+          {isValid
+            ? `${words.length} words, checksum verified. This is a valid recovery phrase.`
+            : `${words.length} words, but the checksum doesn't check out. Go back and look for a typo.`}
         </Text>
       </View>
 
-      <Pressable onPress={onNext} style={styles.cta}>
+      <Pressable onPress={onNext} disabled={!isValid} style={[styles.cta, !isValid && styles.ctaDisabled]}>
         <Text style={styles.ctaText}>Yes, that&rsquo;s my phrase</Text>
       </Pressable>
       <Pressable onPress={onBack} hitSlop={8} style={styles.backLink}>
@@ -166,10 +176,16 @@ const styles = StyleSheet.create({
     borderRadius: Spacing.three,
     backgroundColor: 'rgba(47,95,114,.09)',
   },
+  validityBoxInvalid: {
+    backgroundColor: 'rgba(178,58,46,.1)',
+  },
   validityCheck: {
     color: Palette.action,
     fontSize: 16,
     fontFamily: ArchivoFonts.bold,
+  },
+  validityCheckInvalid: {
+    color: '#b23a2e',
   },
   validityText: {
     flex: 1,
@@ -178,11 +194,17 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     color: '#2c4b57',
   },
+  validityTextInvalid: {
+    color: '#7a2a20',
+  },
   cta: {
     paddingVertical: 18,
     borderRadius: 14,
     alignItems: 'center',
     backgroundColor: Palette.action,
+  },
+  ctaDisabled: {
+    backgroundColor: Palette.stone,
   },
   ctaText: {
     fontFamily: ArchivoFonts.semiBold,

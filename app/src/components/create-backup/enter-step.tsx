@@ -1,7 +1,7 @@
+import { wordlist as BIP39_WORDLIST } from '@scure/bip39/wordlists/english.js';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { SLIP39_WORDLIST } from '@/lib/slip39/wordlist';
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
 /**
@@ -62,7 +62,7 @@ export function EnterStep({
   };
 
   const suggestions = draft.trim()
-    ? SLIP39_WORDLIST.filter((w) => w.startsWith(draft.trim().toLowerCase())).slice(0, 3)
+    ? BIP39_WORDLIST.filter((w) => w.startsWith(draft.trim().toLowerCase())).slice(0, 3)
     : [];
 
   const isComplete = words.length === wordLength;

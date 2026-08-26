@@ -1,5 +1,8 @@
+import { mnemonicToEntropy } from '@scure/bip39';
+import { wordlist as BIP39_WORDLIST } from '@scure/bip39/wordlists/english.js';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import * as Print from 'expo-print';
+import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,16 +11,20 @@ import { DoneStep } from '@/components/create-backup/done-step';
 import { EnterStep } from '@/components/create-backup/enter-step';
 import { PeopleStep } from '@/components/create-backup/people-step';
 import { ProgressHeader } from '@/components/create-backup/progress-header';
+import { StampStep } from '@/components/create-backup/stamp-step';
 import { WriteStep } from '@/components/create-backup/write-step';
 import { MaxContentWidth, Palette } from '@/constants/theme';
+import { buildPieceHtml } from '@/lib/piece-print';
+import { generateMnemonics } from '@/lib/slip39';
 
-type Step = 'enter' | 'check' | 'people' | 'write' | 'done';
+type Step = 'enter' | 'check' | 'people' | 'write' | 'stamp' | 'done';
 
 const STEP_LABELS: Record<Step, string> = {
   enter: 'ENTER YOUR PHRASE',
   check: "CHECK IT'S RIGHT",
   people: 'CHOOSE YOUR PEOPLE',
   write: 'WRITE THE PIECES',
+  stamp: 'WRITE THE PIECES',
   done: 'DONE',
 };
 
@@ -26,10 +33,12 @@ const STEP_SEGMENTS: Record<Step, number> = {
   check: 2,
   people: 3,
   write: 4,
+  stamp: 4,
   done: 4,
 };
 
 const PEOPLE_COUNT = 5;
+const MEMBER_THRESHOLD = 3;
 
 export default function NewBackupScreen() {
   const router = useRouter();
@@ -40,6 +49,22 @@ export default function NewBackupScreen() {
   const [writeIndex, setWriteIndex] = useState(0);
 
   const personLabel = (index: number) => people[index]?.trim() || `Person ${index + 1}`;
+
+  // Each backup piece is a full SLIP-39 mnemonic; the split is randomized, so this only
+  // re-runs when the underlying phrase changes, keeping every piece stable across navigation.
+  const pieces = useMemo<string[] | null>(() => {
+    try {
+      const entropy = mnemonicToEntropy(words.join(' '), BIP39_WORDLIST);
+      const [group] = generateMnemonics(
+        1,
+        [{ memberThreshold: MEMBER_THRESHOLD, memberCount: PEOPLE_COUNT }],
+        entropy,
+      );
+      return group;
+    } catch {
+      return null;
+    }
+  }, [words]);
 
   const handleHeaderBack = () => {
     if (step === 'enter') {
@@ -54,6 +79,8 @@ export default function NewBackupScreen() {
       } else {
         setStep('people');
       }
+    } else if (step === 'stamp') {
+      setStep('write');
     } else {
       setWriteIndex(PEOPLE_COUNT - 1);
       setStep('write');
@@ -65,6 +92,21 @@ export default function NewBackupScreen() {
       setWriteIndex((i) => i + 1);
     } else {
       setStep('done');
+    }
+  };
+
+  const handlePrint = async () => {
+    if (!pieces) return;
+    const html = buildPieceHtml({
+      personLabel: personLabel(writeIndex),
+      pieceNumber: writeIndex + 1,
+      totalPieces: PEOPLE_COUNT,
+      words: pieces[writeIndex].split(' '),
+    });
+    try {
+      await Print.printAsync({ html });
+    } catch {
+      // User cancelled the print dialog, or no print service is available — nothing to do.
     }
   };
 
@@ -102,6 +144,17 @@ export default function NewBackupScreen() {
               pieceNumber={writeIndex + 1}
               totalPieces={PEOPLE_COUNT}
               onMarkWritten={handleMarkWritten}
+              onPrintInstead={handlePrint}
+              onStampIntoMetal={() => setStep('stamp')}
+            />
+          )}
+          {step === 'stamp' && pieces && (
+            <StampStep
+              personLabel={personLabel(writeIndex)}
+              pieceNumber={writeIndex + 1}
+              totalPieces={PEOPLE_COUNT}
+              words={pieces[writeIndex].split(' ')}
+              onDone={() => setStep('write')}
             />
           )}
           {step === 'done' && (

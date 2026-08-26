@@ -8,6 +8,8 @@ type WriteStepProps = {
   pieceNumber: number;
   totalPieces: number;
   onMarkWritten: () => void;
+  onPrintInstead: () => void;
+  onStampIntoMetal: () => void;
 };
 
 function WriteIllustration() {
@@ -28,7 +30,14 @@ function WriteIllustration() {
   );
 }
 
-export function WriteStep({ personLabel, pieceNumber, totalPieces, onMarkWritten }: WriteStepProps) {
+export function WriteStep({
+  personLabel,
+  pieceNumber,
+  totalPieces,
+  onMarkWritten,
+  onPrintInstead,
+  onStampIntoMetal,
+}: WriteStepProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.counter}>
@@ -47,12 +56,12 @@ export function WriteStep({ personLabel, pieceNumber, totalPieces, onMarkWritten
         <Text style={styles.ctaText}>Mark as written</Text>
       </Pressable>
       <View style={styles.altRow}>
-        <View style={styles.altButton}>
+        <Pressable onPress={onPrintInstead} style={styles.altButton}>
           <Text style={styles.altButtonText}>Print it instead</Text>
-        </View>
-        <View style={styles.altButton}>
+        </Pressable>
+        <Pressable onPress={onStampIntoMetal} style={styles.altButton}>
           <Text style={styles.altButtonText}>Stamp into metal</Text>
-        </View>
+        </Pressable>
       </View>
     </View>
   );
