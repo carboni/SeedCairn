@@ -81,7 +81,7 @@ export default function HomeScreen() {
               secures your seed phrase (BIP&#8209;39) using Shamir Secret Sharing (SLIP&#8209;39).
               The code is open source so you can verify it:{' '}
               <ExternalLink
-                href="https://github.com/carboni/seed-phrase-backup"
+                href="https://github.com/carboni/seedcairn"
                 style={styles.trustLink}>
                 github.com/carboni/seed-phrase-backup
               </ExternalLink>
