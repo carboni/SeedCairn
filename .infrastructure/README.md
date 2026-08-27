@@ -1,14 +1,45 @@
-# Welcome to your CDK TypeScript project
+# Infrastructure
 
-This is a blank project for CDK development with TypeScript.
+CDK stack for [seedcairn.com](https://seedcairn.com): a Route53 hosted zone and a `WebFrontend`
+(S3 bucket + Cloudfront distribution + ACM certificate) from
+[`@scloud/cdk-patterns`](https://www.npmjs.com/package/@scloud/cdk-patterns), plus a GitHub
+Actions OIDC role so `.github/workflows/web.yml` can deploy the landing page without long-lived
+AWS credentials. Follows the same pattern as `../hairtracker/.infrastructure` and
+`../education/.infrastructure`.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+`WebFrontend` registers its own bucket and distribution with the OIDC role and publishes
+`WEB_BUCKET` / `WEB_DISTRIBUTIONID` as GitHub Actions repo variables automatically — nothing
+extra to wire up for those. `ghaOidcRole()` similarly publishes `GHA_OIDC_ROLE`.
 
-## Useful commands
+## First-time setup
 
-* `npm run build`   type-check the project
-* `npm run watch`   watch for changes and type-check
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+1. `npm install`
+2. `npx cdk bootstrap` (once per AWS account/region)
+3. Create `github.sh` (gitignored — never commit this) with a GitHub personal access token that
+   has repo admin access, to let `cdk-github` sync secrets/variables after deploy:
+
+   ```bash
+   export USERNAME=<your-github-username>
+   export PERSONAL_ACCESS_TOKEN=<a-github-pat-with-repo-admin-scope>
+   export OWNER=carboni
+   export REPO=SeedCairn
+   ```
+
+## Deploy
+
+```bash
+./deploy.sh
+```
+
+Runs a type-check, shows `cdk diff`, deploys on confirmation, then syncs the resulting
+`WEB_BUCKET` / `WEB_DISTRIBUTIONID` / `GHA_OIDC_ROLE` values to the GitHub repo as Actions
+variables (via `github.sh` + `npm run secrets`).
+
+Use `./diff.sh` to just see what would change.
+
+## After the first deploy
+
+The stack creates a new Route53 hosted zone for `seedcairn.com`. Copy the name servers from the
+`nameServers` stack output (or the AWS Console) and set them as the NS records at your domain
+registrar, so `seedcairn.com` actually resolves via this zone. Certificate validation and the
+CloudFront distribution won't go live until that delegation has propagated.

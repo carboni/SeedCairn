@@ -6,3 +6,6 @@ node_modules
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+
+# GitHub access credentials for the secrets/variables sync (see README.md)
+github.sh

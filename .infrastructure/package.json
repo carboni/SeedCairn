@@ -5,7 +5,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "secrets": "cdk-github --delete"
   },
   "devDependencies": {
     "@swc/core": "^1.15.0",
@@ -19,6 +20,8 @@
   },
   "dependencies": {
     "aws-cdk-lib": "^2.266.0",
-    "constructs": "^10.5.0"
+    "constructs": "^10.5.0",
+    "@scloud/cdk-github": "*",
+    "@scloud/cdk-patterns": "*"
   }
 }
