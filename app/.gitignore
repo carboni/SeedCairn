@@ -32,6 +32,17 @@ yarn-error.*
 # local env files
 .env*.local
 
+# EAS build artifacts
+*.apk
+*.aab
+*.ipa
+build-*.tar.gz
+/SeedCairn.app/
+
+# secrets
+google-service-account*.json
+google-services.json
+
 # typescript
 *.tsbuildinfo
 
