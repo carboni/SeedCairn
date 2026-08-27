@@ -3,9 +3,19 @@ import Svg, { Circle, Ellipse } from 'react-native-svg';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
+const DEFAULT_TITLE = 'Your cairn is built.';
+const DEFAULT_BODY =
+  'Five pieces are written. Give one to each person, and tell them what it is and that they ' +
+  'should keep it somewhere safe.';
+const DEFAULT_TRUST_TEXT =
+  'Close it and no trace of your phrase or your pieces remains. We’ll nudge you in a year to run a drill.';
+
 type DoneStepProps = {
   personLabels: string[];
   onDone: () => void;
+  title?: string;
+  body?: string;
+  trustText?: string;
 };
 
 function CompletedCairnIllustration() {
@@ -21,17 +31,20 @@ function CompletedCairnIllustration() {
   );
 }
 
-export function DoneStep({ personLabels, onDone }: DoneStepProps) {
+export function DoneStep({
+  personLabels,
+  onDone,
+  title = DEFAULT_TITLE,
+  body = DEFAULT_BODY,
+  trustText = DEFAULT_TRUST_TEXT,
+}: DoneStepProps) {
   return (
     <View style={styles.container}>
       <View style={styles.illustrationWrap}>
         <CompletedCairnIllustration />
       </View>
-      <Text style={styles.title}>Your cairn is built.</Text>
-      <Text style={styles.body}>
-        Five pieces are written. Give one to each person, and tell them what it is and that they
-        should keep it somewhere safe.
-      </Text>
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.body}>{body}</Text>
 
       <View style={styles.checklist}>
         {personLabels.map((label, i) => (
@@ -46,9 +59,7 @@ export function DoneStep({ personLabels, onDone }: DoneStepProps) {
       <View style={styles.spacer} />
 
       <Text style={styles.trustText}>
-        <Text style={styles.trustTextBold}>This app remembers nothing.</Text> Close it and no
-        trace of your phrase or your pieces remains. We&rsquo;ll nudge you in a year to run a
-        drill.
+        <Text style={styles.trustTextBold}>This app remembers nothing.</Text> {trustText}
       </Text>
       <Pressable onPress={onDone} style={styles.cta}>
         <Text style={styles.ctaText}>Done</Text>

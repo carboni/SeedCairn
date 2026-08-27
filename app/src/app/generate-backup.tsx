@@ -1,4 +1,4 @@
-import { mnemonicToEntropy } from '@scure/bip39';
+import { generateMnemonic, mnemonicToEntropy } from '@scure/bip39';
 import { wordlist as BIP39_WORDLIST } from '@scure/bip39/wordlists/english.js';
 import { useRouter } from 'expo-router';
 import * as Print from 'expo-print';
@@ -6,53 +6,85 @@ import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { CheckStep } from '@/components/create-backup/check-step';
 import { DoneStep } from '@/components/create-backup/done-step';
-import { EnterStep } from '@/components/create-backup/enter-step';
 import { PeopleStep } from '@/components/create-backup/people-step';
 import { ProgressHeader } from '@/components/create-backup/progress-header';
 import { StampStep } from '@/components/create-backup/stamp-step';
 import { WriteStep } from '@/components/create-backup/write-step';
+import { LengthStep } from '@/components/generate-backup/length-step';
+import { PhraseStep } from '@/components/generate-backup/phrase-step';
+import { ReadOutStep } from '@/components/generate-backup/read-out-step';
+import { WalletCheckStep } from '@/components/generate-backup/wallet-check-step';
+import { WhereFromSheet } from '@/components/generate-backup/where-from-sheet';
 import { MaxContentWidth, Palette } from '@/constants/theme';
 import { buildPieceHtml } from '@/lib/piece-print';
 import { generateMnemonics } from '@/lib/slip39';
 
-type Step = 'enter' | 'check' | 'people' | 'write' | 'stamp' | 'done';
+type Step = 'length' | 'phrase' | 'people' | 'write' | 'stamp' | 'read' | 'check' | 'done';
 
 const STEP_LABELS: Record<Step, string> = {
-  enter: 'ENTER YOUR PHRASE',
-  check: "CHECK IT'S RIGHT",
+  length: 'HOW MANY WORDS',
+  phrase: 'YOUR NEW PHRASE',
   people: 'CHOOSE YOUR PEOPLE',
   write: 'WRITE THE PIECES',
   stamp: 'WRITE THE PIECES',
+  read: 'SET UP YOUR WALLET',
+  check: 'PROVE IT MATCHES',
   done: 'DONE',
 };
 
 const STEP_SEGMENTS: Record<Step, number> = {
-  enter: 1,
-  check: 2,
+  length: 1,
+  phrase: 2,
   people: 3,
   write: 4,
   stamp: 4,
-  done: 4,
+  read: 5,
+  check: 5,
+  done: 5,
 };
 
+const SEGMENT_COUNT = 5;
 const PEOPLE_COUNT = 5;
 const MEMBER_THRESHOLD = 3;
 
-export default function NewBackupScreen() {
+const PEOPLE_STEP_BODY =
+  'We’re doing this before your wallet exists, on purpose — if anything interrupts you, three ' +
+  'pieces still bring the phrase back.';
+
+const DONE_TITLE = 'New wallet, already backed up.';
+const DONE_BODY =
+  'Your wallet holds the phrase and matches word for word. Hand a piece to each person, and ' +
+  'tell them what it is and to keep it somewhere safe.';
+const DONE_TRUST_TEXT =
+  'Close it and the phrase is gone from here — it lives in your wallet and in the five pieces. ' +
+  'We’ll nudge you in a year to run a drill.';
+
+export default function GenerateBackupScreen() {
   const router = useRouter();
-  const [step, setStep] = useState<Step>('enter');
+  const [step, setStep] = useState<Step>('length');
   const [wordLength, setWordLength] = useState<12 | 24>(24);
   const [words, setWords] = useState<string[]>([]);
   const [people, setPeople] = useState<string[]>(Array(PEOPLE_COUNT).fill(''));
   const [writeIndex, setWriteIndex] = useState(0);
+  const [whereFromOpen, setWhereFromOpen] = useState(false);
 
   const personLabel = (index: number) => people[index]?.trim() || `Person ${index + 1}`;
 
+  const generatePhrase = () => {
+    const strength = wordLength === 24 ? 256 : 128;
+    setWords(generateMnemonic(BIP39_WORDLIST, strength).split(' '));
+  };
+
+  const handleGenerate = () => {
+    generatePhrase();
+    setStep('phrase');
+  };
+
   // Each backup piece is a full SLIP-39 mnemonic; the split is randomized, so this only
-  // re-runs when the underlying phrase changes, keeping every piece stable across navigation.
+  // re-runs when the generated phrase changes, keeping every piece stable across navigation.
   const pieces = useMemo<string[] | null>(() => {
+    if (words.length === 0) return null;
     try {
       const entropy = mnemonicToEntropy(words.join(' '), BIP39_WORDLIST);
       const [group] = generateMnemonics(
@@ -67,12 +99,12 @@ export default function NewBackupScreen() {
   }, [words]);
 
   const handleHeaderBack = () => {
-    if (step === 'enter') {
+    if (step === 'length') {
       router.back();
-    } else if (step === 'check') {
-      setStep('enter');
+    } else if (step === 'phrase') {
+      setStep('length');
     } else if (step === 'people') {
-      setStep('check');
+      setStep('phrase');
     } else if (step === 'write') {
       if (writeIndex > 0) {
         setWriteIndex((i) => i - 1);
@@ -81,9 +113,13 @@ export default function NewBackupScreen() {
       }
     } else if (step === 'stamp') {
       setStep('write');
-    } else {
+    } else if (step === 'read') {
       setWriteIndex(PEOPLE_COUNT - 1);
       setStep('write');
+    } else if (step === 'check') {
+      setStep('read');
+    } else {
+      setStep('check');
     }
   };
 
@@ -91,7 +127,7 @@ export default function NewBackupScreen() {
     if (writeIndex < PEOPLE_COUNT - 1) {
       setWriteIndex((i) => i + 1);
     } else {
-      setStep('done');
+      setStep('read');
     }
   };
 
@@ -116,27 +152,32 @@ export default function NewBackupScreen() {
         <ProgressHeader
           label={STEP_LABELS[step]}
           activeSegments={STEP_SEGMENTS[step]}
+          segmentCount={SEGMENT_COUNT}
           onBack={handleHeaderBack}
         />
         <View style={styles.sheet}>
-          {step === 'enter' && (
-            <EnterStep
+          {step === 'length' && (
+            <LengthStep
               wordLength={wordLength}
               onChangeWordLength={setWordLength}
-              words={words}
-              onChangeWords={setWords}
-              onNext={() => setStep('check')}
+              onNext={handleGenerate}
             />
           )}
-          {step === 'check' && (
-            <CheckStep
+          {step === 'phrase' && (
+            <PhraseStep
               words={words}
               onNext={() => setStep('people')}
-              onBack={() => setStep('enter')}
+              onRegenerate={generatePhrase}
+              onOpenWhereFrom={() => setWhereFromOpen(true)}
             />
           )}
           {step === 'people' && (
-            <PeopleStep people={people} onChangePeople={setPeople} onNext={() => setStep('write')} />
+            <PeopleStep
+              people={people}
+              onChangePeople={setPeople}
+              onNext={() => setStep('write')}
+              body={PEOPLE_STEP_BODY}
+            />
           )}
           {step === 'write' && pieces && (
             <WriteStep
@@ -158,14 +199,22 @@ export default function NewBackupScreen() {
               onDone={() => setStep('write')}
             />
           )}
+          {step === 'read' && <ReadOutStep words={words} onNext={() => setStep('check')} />}
+          {step === 'check' && (
+            <WalletCheckStep words={words} onNext={() => setStep('done')} />
+          )}
           {step === 'done' && (
             <DoneStep
               personLabels={people.map((_, i) => personLabel(i))}
               onDone={() => router.back()}
+              title={DONE_TITLE}
+              body={DONE_BODY}
+              trustText={DONE_TRUST_TEXT}
             />
           )}
         </View>
       </SafeAreaView>
+      <WhereFromSheet visible={whereFromOpen} onClose={() => setWhereFromOpen(false)} />
     </View>
   );
 }

@@ -2,13 +2,18 @@ import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
+const DEFAULT_BODY =
+  'Five people, five pieces. Any three of them, together, bring your phrase back. No one ' +
+  'person can do it alone, and losing up to two pieces is fine.';
+
 type PeopleStepProps = {
   people: string[];
   onChangePeople: (people: string[]) => void;
   onNext: () => void;
+  body?: string;
 };
 
-export function PeopleStep({ people, onChangePeople, onNext }: PeopleStepProps) {
+export function PeopleStep({ people, onChangePeople, onNext, body = DEFAULT_BODY }: PeopleStepProps) {
   const setName = (index: number, name: string) => {
     const next = [...people];
     next[index] = name;
@@ -18,10 +23,7 @@ export function PeopleStep({ people, onChangePeople, onNext }: PeopleStepProps) 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Who will hold a piece?</Text>
-      <Text style={styles.body}>
-        Five people, five pieces. Any three of them, together, bring your phrase back. No one
-        person can do it alone, and losing up to two pieces is fine.
-      </Text>
+      <Text style={styles.body}>{body}</Text>
 
       <View style={styles.rows}>
         {people.map((name, i) => (

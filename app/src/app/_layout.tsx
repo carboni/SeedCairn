@@ -49,6 +49,7 @@ function RootNavigator() {
       <Stack.Protected guard={hasCompletedOnboarding}>
         <Stack.Screen name="index" />
         <Stack.Screen name="new-backup" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="generate-backup" options={{ presentation: 'modal' }} />
         <Stack.Screen
           name="restore"
           options={{ headerShown: true, title: 'Restore', presentation: 'modal' }}

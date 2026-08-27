@@ -1,15 +1,30 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Pressable, StyleSheet, Text, Vibration, View } from 'react-native';
 import Svg, { Circle, Ellipse, Path, Rect } from 'react-native-svg';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
+import { cancelNfcWrite, isBenignNfcAbort, isNfcReady, writeTextToTag } from '@/lib/nfc';
 
 type WriteStepProps = {
   personLabel: string;
   pieceNumber: number;
   totalPieces: number;
+  pieceMnemonic: string;
   onMarkWritten: () => void;
   onPrintInstead: () => void;
   onStampIntoMetal: () => void;
+};
+
+type NfcStatus = 'checking' | 'unsupported' | 'waiting' | 'success' | 'error';
+
+const RETRY_DELAY_MS = 1500;
+
+const NFC_STATUS_TEXT: Record<NfcStatus, string | null> = {
+  checking: null,
+  unsupported: "This device can't write NFC cards — use Print it instead or Stamp into metal below.",
+  waiting: 'Listening for a card…',
+  success: 'Card written. Tap Mark as written to continue.',
+  error: "Couldn't write to that card — trying again…",
 };
 
 function WriteIllustration() {
@@ -34,10 +49,56 @@ export function WriteStep({
   personLabel,
   pieceNumber,
   totalPieces,
+  pieceMnemonic,
   onMarkWritten,
   onPrintInstead,
   onStampIntoMetal,
 }: WriteStepProps) {
+  const [nfcStatus, setNfcStatus] = useState<NfcStatus>('checking');
+
+  useEffect(() => {
+    let cancelled = false;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
+
+    async function loop() {
+      const ready = await isNfcReady();
+      if (cancelled) return;
+      if (!ready) {
+        setNfcStatus('unsupported');
+        return;
+      }
+
+      while (!cancelled) {
+        setNfcStatus('waiting');
+        try {
+          await writeTextToTag(pieceMnemonic);
+          if (cancelled) return;
+          setNfcStatus('success');
+          Vibration.vibrate();
+          return;
+        } catch (error) {
+          if (cancelled) return;
+          if (!isBenignNfcAbort(error)) {
+            setNfcStatus('error');
+            await new Promise((resolve) => {
+              retryTimer = setTimeout(resolve, RETRY_DELAY_MS);
+            });
+          }
+        }
+      }
+    }
+
+    loop();
+
+    return () => {
+      cancelled = true;
+      clearTimeout(retryTimer);
+      cancelNfcWrite();
+    };
+  }, [pieceMnemonic]);
+
+  const statusText = NFC_STATUS_TEXT[nfcStatus];
+
   return (
     <View style={styles.container}>
       <Text style={styles.counter}>
@@ -45,6 +106,11 @@ export function WriteStep({
       </Text>
       <Text style={styles.title}>Tap to write {personLabel}&rsquo;s piece</Text>
       <Text style={styles.body}>Hold a blank NFC card against the back of your phone until it buzzes.</Text>
+      {statusText && (
+        <Text style={[styles.status, nfcStatus === 'success' && styles.statusSuccess]}>
+          {statusText}
+        </Text>
+      )}
 
       <View style={styles.illustrationWrap}>
         <WriteIllustration />
@@ -94,6 +160,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 22,
     color: Palette.textSecondary,
+  },
+  status: {
+    fontFamily: ArchivoFonts.medium,
+    fontSize: 13,
+    marginTop: Spacing.two,
+    color: Palette.textTertiary,
+  },
+  statusSuccess: {
+    color: Palette.action,
   },
   illustrationWrap: {
     alignItems: 'center',

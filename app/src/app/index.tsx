@@ -21,9 +21,7 @@ export default function HomeScreen() {
             <Text style={styles.brandText}>SeedCairn</Text>
           </View>
           <Text style={styles.hero}>keep it together</Text>
-          <Text style={styles.heroSubtitle}>
-            This app helps you back up or recover a crypto wallet seed phrase.
-          </Text>
+          <Text style={styles.heroSubtitle}>Where would you like to start?</Text>
         </View>
 
         <View style={styles.sheet}>
@@ -38,12 +36,35 @@ export default function HomeScreen() {
               />
             </View>
             <View style={styles.cardText}>
-              <Text style={styles.primaryCardTitle}>Create a backup using my seed phrase</Text>
-              <Text style={styles.primaryCardSubtitle}>Takes about 5 minutes</Text>
+              <Text style={styles.primaryCardTitle}>I have a seed phrase</Text>
+              <Text style={styles.primaryCardSubtitle}>Split it into five pieces and hand them out</Text>
             </View>
             <SymbolView
               name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
               tintColor="rgba(255,255,255,.85)"
+              size={20}
+            />
+          </Pressable>
+
+          <Pressable
+            onPress={() => router.push('/generate-backup')}
+            style={({ pressed }) => [styles.card, styles.middleCard, pressed && styles.pressed]}>
+            <View style={[styles.iconChip, styles.middleIconChip]}>
+              <SymbolView
+                name={{ ios: 'plus', android: 'add', web: 'add' }}
+                tintColor="#d8a75a"
+                size={22}
+              />
+            </View>
+            <View style={styles.cardText}>
+              <Text style={styles.middleCardTitle}>I need a new seed phrase</Text>
+              <Text style={styles.middleCardSubtitle}>
+                We&rsquo;ll make one, back it up, then set your wallet up from it
+              </Text>
+            </View>
+            <SymbolView
+              name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
+              tintColor="rgba(246,244,239,.7)"
               size={20}
             />
           </Pressable>
@@ -59,8 +80,8 @@ export default function HomeScreen() {
               />
             </View>
             <View style={styles.cardText}>
-              <Text style={styles.secondaryCardTitle}>Recover my seed phrase from a backup</Text>
-              <Text style={styles.secondaryCardSubtitle}>You&rsquo;ll need your shares to hand</Text>
+              <Text style={styles.secondaryCardTitle}>I need my phrase back</Text>
+              <Text style={styles.secondaryCardSubtitle}>Gather three pieces from your people</Text>
             </View>
             <SymbolView
               name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
@@ -157,6 +178,9 @@ const styles = StyleSheet.create({
     boxShadow: `0px 6px 10px 0px ${Palette.stoneDark}40`,
     elevation: 3,
   },
+  middleCard: {
+    backgroundColor: Palette.stoneDark,
+  },
   secondaryCard: {
     backgroundColor: Palette.card,
     borderWidth: 1,
@@ -171,6 +195,9 @@ const styles = StyleSheet.create({
   },
   primaryIconChip: {
     backgroundColor: 'rgba(255,255,255,.16)',
+  },
+  middleIconChip: {
+    backgroundColor: 'rgba(216,167,90,.16)',
   },
   secondaryIconChip: {
     backgroundColor: Palette.chip,
@@ -191,6 +218,19 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     color: 'rgba(255,255,255,.75)',
+  },
+  middleCardTitle: {
+    fontFamily: ArchivoFonts.semiBold,
+    fontSize: 18,
+    lineHeight: 23,
+    letterSpacing: -0.2,
+    color: Palette.textOnDark,
+  },
+  middleCardSubtitle: {
+    fontFamily: ArchivoFonts.regular,
+    fontSize: 13,
+    lineHeight: 18,
+    color: Palette.textOnDarkMuted,
   },
   secondaryCardTitle: {
     fontFamily: ArchivoFonts.semiBold,

@@ -3,16 +3,23 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
-const SEGMENT_COUNT = 4;
+const DEFAULT_SEGMENT_COUNT = 4;
 
 type ProgressHeaderProps = {
   label: string;
-  /** How many of the 4 segments (enter/check/people/write) are lit. */
+  /** How many of the segments are lit. */
   activeSegments: number;
+  /** Total number of segments in the bar. Defaults to 4 (enter/check/people/write). */
+  segmentCount?: number;
   onBack: () => void;
 };
 
-export function ProgressHeader({ label, activeSegments, onBack }: ProgressHeaderProps) {
+export function ProgressHeader({
+  label,
+  activeSegments,
+  segmentCount = DEFAULT_SEGMENT_COUNT,
+  onBack,
+}: ProgressHeaderProps) {
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
@@ -26,7 +33,7 @@ export function ProgressHeader({ label, activeSegments, onBack }: ProgressHeader
         <Text style={styles.label}>{label}</Text>
       </View>
       <View style={styles.bars}>
-        {Array.from({ length: SEGMENT_COUNT }).map((_, i) => (
+        {Array.from({ length: segmentCount }).map((_, i) => (
           <View
             key={i}
             style={[styles.bar, { backgroundColor: i < activeSegments ? Palette.action : 'rgba(242,240,235,.15)' }]}
