@@ -1,0 +1,59 @@
+name: web
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      # Build when there are changes in the directory that holds the component,
+      # or when this workflow file is changed
+      - "web/**"
+      - ".github/workflows/web.yml"
+  schedule:
+    # A weekly build to pick up updates to the base container image
+    # A weekday at mid-day - when someone is likely to be working (avoid bank holidays)
+    - cron: "0 12 * * 3"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Web
+    runs-on: ubuntu-latest
+    env:
+      bucket: ${{ vars.WEB_BUCKET }}
+      distributionId: ${{ vars.WEB_DISTRIBUTIONID }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.GHA_OIDC_ROLE }}
+          aws-region: eu-west-2
+
+      - name: Commit hash
+        working-directory: ${{ github.workflow }}
+        run: |
+          mkdir -p dist
+          echo $(git rev-parse --short HEAD) > dist/COMMIT_HASH
+
+      - name: Minify CSS and JS
+        working-directory: ${{ github.workflow }}
+        run: |
+          cp -r public/. dist/ # https://superuser.com/a/367303/162662
+          npx clean-css-cli@5 -o dist/css/styles.css dist/css/styles.css
+          npx terser@5 dist/js/scripts.js -o dist/js/scripts.js -c -m
+
+      - name: Upload to s3
+        working-directory: ${{ github.workflow }}
+        run: |
+          cd dist
+          aws s3 sync --delete . s3://${bucket}/
+
+      - name: Invalidate Cloudfront
+        working-directory: ${{ github.workflow }}
+        run: |
+          aws cloudfront create-invalidation --distribution-id $distributionId --paths '/*'

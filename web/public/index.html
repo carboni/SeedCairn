@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Split your crypto wallet seed phrase into five pieces with Shamir's Secret Sharing (SLIP-39). Give one to each person you trust — any three rebuild it, none reveal anything alone. Nothing ever leaves your device." />
+    <meta name="author" content="SeedCairn" />
+    <title>SeedCairn – keep it together</title>
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/img/favicon.png" />
+    <link rel="apple-touch-icon" href="/img/icon.png" />
+    <meta name="theme-color" content="#1b1d1c" />
+
+    <link rel="canonical" href="https://seedcairn.com/" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="/css/styles.css" rel="stylesheet" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://seedcairn.com/" />
+    <meta property="og:title" content="SeedCairn – keep it together" />
+    <meta property="og:description" content="Split your crypto wallet seed phrase into five pieces with Shamir's Secret Sharing (SLIP-39). Any three rebuild it. Nothing ever leaves your device." />
+    <meta property="og:image" content="https://seedcairn.com/img/icon.png" />
+    <meta property="og:locale" content="en_GB" />
+    <meta name="twitter:card" content="summary" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://seedcairn.com/#organization",
+          "name": "SeedCairn",
+          "url": "https://seedcairn.com/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://seedcairn.com/img/icon.png",
+            "width": 1024,
+            "height": 1024
+          },
+          "sameAs": ["https://github.com/carboni/SeedCairn"]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://seedcairn.com/#website",
+          "url": "https://seedcairn.com/",
+          "name": "SeedCairn",
+          "description": "Split your crypto wallet seed phrase into five pieces with Shamir's Secret Sharing (SLIP-39). Any three rebuild it. Nothing ever leaves your device.",
+          "publisher": { "@id": "https://seedcairn.com/#organization" },
+          "inLanguage": "en-GB"
+        }
+      ]
+    }
+    </script>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="wrap">
+        <a class="brand" href="/" aria-label="SeedCairn home">
+          <img src="/img/mark.svg" alt="" />
+          SeedCairn
+        </a>
+        <ul class="nav-links">
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#why">Why SeedCairn</a></li>
+          <li><a href="#status">Status</a></li>
+          <li><a href="https://github.com/carboni/SeedCairn">Source</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="wrap">
+        <img class="hero-mark" src="/img/mark.svg" alt="SeedCairn" />
+        <h1>SeedCairn</h1>
+        <p class="tagline">keep it together</p>
+        <p class="lead">
+          Instead of one seed phrase written on one piece of paper, split it
+          into five pieces and give one to each person you trust. No single
+          piece reveals anything on its own; any three together rebuild it
+          exactly. Nothing ever leaves your device — no accounts, no server,
+          no stored state.
+        </p>
+        <div class="cta-row">
+          <span class="badge-soon">Try it in your browser — coming soon</span>
+          <a class="btn btn-ghost" href="https://github.com/carboni/SeedCairn">View the source</a>
+        </div>
+      </div>
+    </header>
+
+    <section id="how-it-works">
+      <div class="wrap">
+        <div class="section-header">
+          <span class="kicker">How it works</span>
+          <h2>Shamir's Secret Sharing, in four steps</h2>
+          <p>
+            SeedCairn uses SLIP-39, the open standard for splitting a wallet
+            seed into shares — the same math a security team would use, not a
+            proprietary scheme.
+          </p>
+        </div>
+        <div class="steps">
+          <div class="step" data-n="1">
+            <div class="step-stones"><span></span></div>
+            <h3>Enter your phrase</h3>
+            <p>Type in the BIP-39 seed phrase you want to back up. It never leaves the device.</p>
+          </div>
+          <div class="step" data-n="2">
+            <div class="step-stones"><span></span><span></span></div>
+            <h3>Split into shares</h3>
+            <p>SeedCairn splits it into five SLIP-39 shares using Shamir's Secret Sharing.</p>
+          </div>
+          <div class="step" data-n="3">
+            <div class="step-stones"><span></span><span></span><span></span></div>
+            <h3>Give one to each person</h3>
+            <p>Name five people you trust. Write, print, or stamp one share for each of them.</p>
+          </div>
+          <div class="step" data-n="4">
+            <div class="step-stones"><span></span><span></span><span></span><span></span></div>
+            <h3>Any three rebuild it</h3>
+            <p>Bring any three shares back together to recover the exact original phrase.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="why" class="features">
+      <div class="wrap">
+        <div class="section-header">
+          <span class="kicker">Why SeedCairn</span>
+          <h2>Built to be trusted, not just used</h2>
+        </div>
+        <div class="feature-grid">
+          <div class="feature">
+            <div class="feature-icon">◆</div>
+            <div>
+              <h3>Nothing leaves your device</h3>
+              <p>No accounts, no server, no analytics on your phrase or shares. What you enter stays on the device you enter it on.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">◆</div>
+            <div>
+              <h3>Works offline</h3>
+              <p>Split and recover a phrase with no network connection at all — put the device in airplane mode first if you want to be sure.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">◆</div>
+            <div>
+              <h3>Open standard</h3>
+              <p>Built on SLIP-39 and BIP-39, not a proprietary format — shares stay recoverable with other compatible tools, not just SeedCairn.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">◆</div>
+            <div>
+              <h3>Write it, print it, stamp it</h3>
+              <p>Export shares to NFC cards, paper, or metal — durable, offline storage for the people holding them.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="status">
+      <div class="wrap">
+        <div class="section-header">
+          <span class="kicker">Status</span>
+          <h2>Early and honest about it</h2>
+        </div>
+        <div class="status-card">
+          <h3>SeedCairn is in active development.</h3>
+          <p>
+            The SLIP-39 splitting and recovery logic is implemented from spec
+            and tested against all 45 official test vectors — but it isn't
+            wired into the app yet, and the app itself hasn't shipped.
+            <strong>Don't use this for a real seed phrase yet.</strong>
+          </p>
+          <p>
+            Source is published for verification at
+            <code>github.com/carboni/SeedCairn</code> — you're welcome to
+            read it, clone it, and build your own copy. It isn't open source
+            for redistribution; see the repository's <code>LICENSE</code>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap">
+        <a class="footer-brand" href="/">
+          <img src="/img/mark.svg" alt="" />
+          SeedCairn
+        </a>
+        <ul class="footer-links">
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#why">Why SeedCairn</a></li>
+          <li><a href="https://github.com/carboni/SeedCairn">Source</a></li>
+        </ul>
+      </div>
+      <div class="wrap">
+        <p class="footer-note">© 2026 David Carboni. Source published for verification, not open source — see LICENSE.</p>
+      </div>
+    </footer>
+  </body>
+</html>
