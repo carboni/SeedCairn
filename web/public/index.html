@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="Split your crypto wallet seed phrase into five pieces with Shamir's Secret Sharing (SLIP-39). Give one to each person you trust — any three rebuild it, none reveal anything alone. Nothing ever leaves your device." />
+    <meta name="description" content="Keep something precious with the people you trust. SeedCairn splits your crypto wallet recovery phrase into five pieces — any three bring it back, one alone reveals nothing." />
     <meta name="author" content="SeedCairn" />
     <title>SeedCairn – keep it together</title>
 
@@ -22,7 +22,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://seedcairn.com/" />
     <meta property="og:title" content="SeedCairn – keep it together" />
-    <meta property="og:description" content="Split your crypto wallet seed phrase into five pieces with Shamir's Secret Sharing (SLIP-39). Any three rebuild it. Nothing ever leaves your device." />
+    <meta property="og:description" content="Keep something precious with the people you trust. SeedCairn splits your crypto wallet recovery phrase into five pieces — any three bring it back, one alone reveals nothing." />
     <meta property="og:image" content="https://seedcairn.com/img/icon.png" />
     <meta property="og:locale" content="en_GB" />
     <meta name="twitter:card" content="summary" />
@@ -49,162 +49,243 @@
           "@id": "https://seedcairn.com/#website",
           "url": "https://seedcairn.com/",
           "name": "SeedCairn",
-          "description": "Split your crypto wallet seed phrase into five pieces with Shamir's Secret Sharing (SLIP-39). Any three rebuild it. Nothing ever leaves your device.",
+          "description": "Keep something precious with the people you trust. SeedCairn splits your crypto wallet recovery phrase into five pieces — any three bring it back, one alone reveals nothing.",
           "publisher": { "@id": "https://seedcairn.com/#organization" },
           "inLanguage": "en-GB"
         }
       ]
     }
     </script>
+
+    <!--
+      Placeholders carried over from the Claude Design draft (Landing Page.dc.html)
+      that need real values before this page is truly launch-ready:
+        - webAppUrl below points at https://app.seedcairn.com, which doesn't exist
+          yet — see .infrastructure plan for standing up that subdomain.
+        - The Android card's download link, size and checksum are stubs pending
+          a real published build.
+        - The "Also on the app stores" block is omitted (see comment near
+          #get below) since neither store listing exists yet and showing it
+          would contradict the "not out yet" iPhone copy right above it.
+    -->
   </head>
   <body>
     <nav class="nav">
       <div class="wrap">
         <a class="brand" href="/" aria-label="SeedCairn home">
-          <img src="/img/mark.svg" alt="" />
+          <svg width="22" height="26" viewBox="0 0 22 26" fill="none">
+            <ellipse cx="11" cy="22.2" rx="9" ry="2.6" fill="#8e9aa0" />
+            <ellipse cx="11" cy="16.6" rx="7" ry="2.4" fill="#cfcabf" />
+            <ellipse cx="11" cy="11.4" rx="5" ry="2.1" fill="#cfcabf" />
+            <circle cx="11" cy="5" r="4.2" fill="#d8a75a" />
+          </svg>
           SeedCairn
         </a>
         <ul class="nav-links">
-          <li><a href="#how-it-works">How it works</a></li>
-          <li><a href="#why">Why SeedCairn</a></li>
-          <li><a href="#status">Status</a></li>
-          <li><a href="https://github.com/carboni/SeedCairn">Source</a></li>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#try">Try it</a></li>
+          <li><a class="btn-pill" href="#get">Get the app</a></li>
         </ul>
       </div>
     </nav>
 
     <header class="hero">
       <div class="wrap">
-        <img class="hero-mark" src="/img/mark.svg" alt="SeedCairn" />
-        <h1>SeedCairn</h1>
-        <p class="tagline">keep it together</p>
-        <p class="lead">
-          Instead of one seed phrase written on one piece of paper, split it
-          into five pieces and give one to each person you trust. No single
-          piece reveals anything on its own; any three together rebuild it
-          exactly. Nothing ever leaves your device — no accounts, no server,
-          no stored state.
-        </p>
-        <div class="cta-row">
-          <span class="badge-soon">Try it in your browser — coming soon</span>
-          <a class="btn btn-ghost" href="https://github.com/carboni/SeedCairn">View the source</a>
+        <div>
+          <span class="eyebrow">keep it together</span>
+          <h1>Keep something precious with the people you trust.</h1>
+          <p>Your crypto wallet has a recovery phrase. Lose it and your money is gone forever. Write it down in one place and any fire, flood or nosy visitor can take everything.</p>
+          <p class="emphasis"><strong>SeedCairn splits that phrase into five pieces</strong> and helps you leave one with each of five people you trust. Any three of them can bring it back. Fewer than three is useless to anyone.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="https://app.seedcairn.com">
+              Try it in your browser
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5 13 10l-5.5 5.5" /></svg>
+            </a>
+            <a class="btn btn-ghost" href="#get">Get the app</a>
+          </div>
+        </div>
+        <div class="hero-art">
+          <svg width="320" height="290" viewBox="0 0 200 180" fill="none">
+            <circle cx="100" cy="52" r="20" fill="#d8a75a" />
+            <circle cx="34" cy="132" r="15" fill="#5b6b6a" /><circle cx="67" cy="150" r="15" fill="#5b6b6a" /><circle cx="100" cy="156" r="15" fill="#5b6b6a" /><circle cx="133" cy="150" r="15" fill="#5b6b6a" /><circle cx="166" cy="132" r="15" fill="#5b6b6a" />
+            <path d="M100 74v46M100 90 40 124M100 90l60 34M100 96 70 136M100 96l30 40" stroke="rgba(207,202,191,.32)" stroke-width="1.5" />
+          </svg>
         </div>
       </div>
     </header>
 
-    <section id="how-it-works">
+    <div class="trust-strip">
       <div class="wrap">
-        <div class="section-header">
-          <span class="kicker">How it works</span>
-          <h2>Shamir's Secret Sharing, in four steps</h2>
-          <p>
-            SeedCairn uses SLIP-39, the open standard for splitting a wallet
-            seed into shares — the same math a security team would use, not a
-            proprietary scheme.
-          </p>
+        <div class="trust-item">
+          <span class="title">Nothing leaves your device</span>
+          <span class="desc">No servers, no uploads, no cloud. The splitting happens on your phone.</span>
         </div>
-        <div class="steps">
-          <div class="step" data-n="1">
-            <div class="step-stones"><span></span></div>
-            <h3>Enter your phrase</h3>
-            <p>Type in the BIP-39 seed phrase you want to back up. It never leaves the device.</p>
+        <div class="trust-item">
+          <span class="title">No accounts, no sign-up</span>
+          <span class="desc">There is nothing to log into. The app remembers nothing after you close it.</span>
+        </div>
+        <div class="trust-item">
+          <span class="title">Open, checkable maths</span>
+          <span class="desc">Built on the published BIP&#8209;39 and SLIP&#8209;39 standards, not our own invention.</span>
+        </div>
+      </div>
+    </div>
+
+    <section id="how">
+      <div class="wrap">
+        <h2>Five pieces. Any three bring it back.</h2>
+        <p class="section-lead">It takes about ten minutes, once. Then your backup is out in the world, in the hands of people who care about you.</p>
+
+        <div class="steps-grid">
+          <div class="card">
+            <span class="step-label">STEP ONE</span>
+            <h3>Type in your phrase</h3>
+            <p>The twelve or twenty-four words your wallet gave you. Words are checked as you type, and each one stays hidden unless you hold your finger on it.</p>
           </div>
-          <div class="step" data-n="2">
-            <div class="step-stones"><span></span><span></span></div>
-            <h3>Split into shares</h3>
-            <p>SeedCairn splits it into five SLIP-39 shares using Shamir's Secret Sharing.</p>
+          <div class="card">
+            <span class="step-label">STEP TWO</span>
+            <h3>Name five people</h3>
+            <p>A sibling, a best friend, a solicitor, a safe at your parents' house. Each piece carries a name, so future-you knows exactly where to go.</p>
           </div>
-          <div class="step" data-n="3">
-            <div class="step-stones"><span></span><span></span><span></span></div>
-            <h3>Give one to each person</h3>
-            <p>Name five people you trust. Write, print, or stamp one share for each of them.</p>
+          <div class="card">
+            <span class="step-label">STEP THREE</span>
+            <h3>Put them on something real</h3>
+            <p>Tap each piece onto a blank NFC card, print it, or stamp it into metal. Then hand them out. Nothing is ever emailed or sent.</p>
           </div>
-          <div class="step" data-n="4">
-            <div class="step-stones"><span></span><span></span><span></span><span></span></div>
-            <h3>Any three rebuild it</h3>
-            <p>Bring any three shares back together to recover the exact original phrase.</p>
+        </div>
+
+        <div class="dark-grid">
+          <div class="card-dark">
+            <h3>Losing a piece is fine</h3>
+            <p>Two people can move house, fall out with you, or lose their card entirely. Three is still enough. That is the whole point of splitting it.</p>
+          </div>
+          <div class="card-dark">
+            <h3>One piece reveals nothing</h3>
+            <p>Anyone holding a single card learns nothing at all about your phrase — not a word of it, not even a hint. They would need two others to conspire with.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="why" class="features">
-      <div class="wrap">
-        <div class="section-header">
-          <span class="kicker">Why SeedCairn</span>
-          <h2>Built to be trusted, not just used</h2>
+    <section id="try" class="try-section">
+      <div class="wrap try-grid">
+        <div>
+          <h2>Have a look round first</h2>
+          <p class="section-lead">There is a full version of SeedCairn that runs in this browser tab. Walk the whole flow, see what the cards look like, decide whether you like it. Nothing is saved when you close it.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="https://app.seedcairn.com">
+              Open the web version
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5 13 10l-5.5 5.5" /></svg>
+            </a>
+            <span class="hint">Practice phrase provided</span>
+          </div>
         </div>
-        <div class="feature-grid">
-          <div class="feature">
-            <div class="feature-icon">◆</div>
-            <div>
-              <h3>Nothing leaves your device</h3>
-              <p>No accounts, no server, no analytics on your phrase or shares. What you enter stays on the device you enter it on.</p>
-            </div>
+        <div class="note-card">
+          <div class="note-title">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="8.5" /><path d="M11 10v5.2M11 7.3v.1" stroke-linecap="round" /></svg>
+            <span>Use the app for a real phrase</span>
           </div>
-          <div class="feature">
-            <div class="feature-icon">◆</div>
-            <div>
-              <h3>Works offline</h3>
-              <p>Split and recover a phrase with no network connection at all — put the device in airplane mode first if you want to be sure.</p>
-            </div>
-          </div>
-          <div class="feature">
-            <div class="feature-icon">◆</div>
-            <div>
-              <h3>Open standard</h3>
-              <p>Built on SLIP-39 and BIP-39, not a proprietary format — shares stay recoverable with other compatible tools, not just SeedCairn.</p>
-            </div>
-          </div>
-          <div class="feature">
-            <div class="feature-icon">◆</div>
-            <div>
-              <h3>Write it, print it, stamp it</h3>
-              <p>Export shares to NFC cards, paper, or metal — durable, offline storage for the people holding them.</p>
-            </div>
-          </div>
+          <p>A browser is a shared, busy place — extensions can read pages, and it can't write NFC cards. For the phrase that actually holds your money, install the app and turn off the internet while you use it.</p>
+          <p>Treat the web version as a showroom, not the workshop.</p>
         </div>
       </div>
     </section>
 
-    <section id="status">
+    <section id="get">
       <div class="wrap">
-        <div class="section-header">
-          <span class="kicker">Status</span>
-          <h2>Early and honest about it</h2>
+        <h2>Get SeedCairn on your phone</h2>
+        <p class="section-lead">Free, no account, and it works with the internet switched off. Version 1.0.</p>
+
+        <div class="get-grid">
+          <div class="card-dark">
+            <span class="platform-label">ANDROID</span>
+            <h3>Download the APK</h3>
+            <p>Install it straight onto your phone. You will need to allow installs from outside the store once — Android will walk you through it.</p>
+            <div class="cta-row" style="margin-top: 8px">
+              <a class="btn btn-ochre" href="/downloads/seedcairn-latest.apk">Download for Android</a>
+              <span class="meta">Android 9+</span>
+            </div>
+            <span class="checksum">Checksum published with each release</span>
+          </div>
+
+          <div class="card">
+            <span class="platform-label">IPHONE &amp; IPAD</span>
+            <h3>Not out yet</h3>
+            <p>The iPhone version is being reviewed for the App Store. Until then, the web version works on iPhone for a look around — though it can't write NFC cards.</p>
+            <div style="margin-top: 8px">
+              <a class="btn-link" href="https://app.seedcairn.com">Open the web version</a>
+            </div>
+          </div>
         </div>
-        <div class="status-card">
-          <h3>SeedCairn is in active development.</h3>
-          <p>
-            The SLIP-39 splitting and recovery logic is implemented from spec
-            and tested against all 45 official test vectors — but it isn't
-            wired into the app yet, and the app itself hasn't shipped.
-            <strong>Don't use this for a real seed phrase yet.</strong>
-          </p>
-          <p>
-            Source is published for verification at
-            <code>github.com/carboni/SeedCairn</code> — you're welcome to
-            read it, clone it, and build your own copy. It isn't open source
-            for redistribution; see the repository's <code>LICENSE</code>.
-          </p>
+
+        <!--
+          "Also on the app stores" (Play Store / App Store badges) is left out
+          for now — neither store listing exists yet, and the Android card
+          above already points at a direct APK download. Re-add once both
+          apps are actually published, with real playStoreUrl / appStoreUrl
+          links (see the store-link markup in git history / the design
+          draft's Landing Page.dc.html for the badge SVGs).
+        -->
+      </div>
+    </section>
+
+    <section class="faq-grid" style="padding: 96px 32px">
+      <h2>Questions people ask</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <span class="q">Do you ever see my recovery phrase?</span>
+          <span class="a">No. There is no account and no server to send it to. Everything happens on your own device, and you can turn the internet off while you do it.</span>
+        </div>
+        <div class="faq-item">
+          <span class="q">What if one of my five people looks at their card?</span>
+          <span class="a">They learn nothing. A single piece gives away no part of your phrase. Three of the five would have to get together and try.</span>
+        </div>
+        <div class="faq-item">
+          <span class="q">What if I lose my phone?</span>
+          <span class="a">Your backup is not on your phone — it is out with your five people. Install the app anywhere, gather three pieces, and your phrase comes back.</span>
+        </div>
+        <div class="faq-item">
+          <span class="q">Do the people holding a piece need the app?</span>
+          <span class="a">Only if they help you recover. Day to day they just keep the card safe. When you need it, they hand it back or tap it on your phone.</span>
+        </div>
+        <div class="faq-item">
+          <span class="q">Is this only for Bitcoin?</span>
+          <span class="a">It works with any wallet that gave you a twelve or twenty-four word phrase, which is nearly all of them.</span>
         </div>
       </div>
     </section>
 
     <footer>
       <div class="wrap">
-        <a class="footer-brand" href="/">
-          <img src="/img/mark.svg" alt="" />
-          SeedCairn
-        </a>
-        <ul class="footer-links">
-          <li><a href="#how-it-works">How it works</a></li>
-          <li><a href="#why">Why SeedCairn</a></li>
-          <li><a href="https://github.com/carboni/SeedCairn">Source</a></li>
-        </ul>
-      </div>
-      <div class="wrap">
-        <p class="footer-note">© 2026 David Carboni. Source published for verification, not open source — see LICENSE.</p>
+        <div class="footer-top">
+          <div class="footer-brand-col">
+            <a class="footer-brand" href="/">
+              <svg width="22" height="26" viewBox="0 0 22 26" fill="none">
+                <ellipse cx="11" cy="22.2" rx="9" ry="2.6" fill="#8e9aa0" />
+                <ellipse cx="11" cy="16.6" rx="7" ry="2.4" fill="#cfcabf" />
+                <ellipse cx="11" cy="11.4" rx="5" ry="2.1" fill="#cfcabf" />
+                <circle cx="11" cy="5" r="4.2" fill="#d8a75a" />
+              </svg>
+              SeedCairn
+            </a>
+            <p>A backup you can hand to the people you trust. No accounts, no servers, nothing kept.</p>
+          </div>
+          <div class="footer-col">
+            <span class="heading">PRODUCT</span>
+            <a href="#how">How it works</a>
+            <a href="https://app.seedcairn.com">Web version</a>
+            <a href="#get">Download</a>
+          </div>
+          <div class="footer-col">
+            <span class="heading">SOURCE</span>
+            <a href="https://github.com/carboni/SeedCairn">GitHub</a>
+            <a href="https://github.com/carboni/SeedCairn/blob/main/LICENSE">License</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>&copy; 2026 SeedCairn. Built on the BIP&#8209;39 and SLIP&#8209;39 standards.</span>
+          <span>This site sets no cookies and runs no analytics.</span>
+        </div>
       </div>
     </footer>
   </body>
