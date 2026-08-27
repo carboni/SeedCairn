@@ -676,6 +676,81 @@ footer {
   color: var(--text-on-dark-faintest);
 }
 
+/* Legal pages (privacy etc.) */
+
+.legal-header {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 56px 32px;
+}
+
+.legal-header h1 {
+  margin: 0 0 8px;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+}
+
+.legal-header .meta {
+  font-size: 14.5px;
+  color: var(--text-tertiary);
+}
+
+.legal {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 64px 32px 96px;
+}
+
+.legal h2 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+  margin: 44px 0 14px;
+}
+
+.legal h2:first-child {
+  margin-top: 0;
+}
+
+.legal p {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+}
+
+.legal ul {
+  margin: 0 0 16px;
+  padding-left: 22px;
+}
+
+.legal li {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.legal strong {
+  color: var(--text-primary);
+}
+
+.legal .callout {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--action);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 0 0 16px;
+}
+
+.legal .callout p:last-child {
+  margin-bottom: 0;
+}
+
 /* Responsive */
 
 @media (max-width: 900px) {
