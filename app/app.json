@@ -13,7 +13,7 @@
         "dark": "./assets/images/ios-icon-dark.png",
         "tinted": "./assets/images/ios-icon-tinted.png"
       },
-      "bundleIdentifier": "io.carboni.seedcairn",
+      "bundleIdentifier": "com.seedcairn",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -28,7 +28,7 @@
       "permissions": [
         "android.permission.NFC"
       ],
-      "package": "io.carboni.seedcairn"
+      "package": "com.seedcairn"
     },
     "web": {
       "output": "static",
