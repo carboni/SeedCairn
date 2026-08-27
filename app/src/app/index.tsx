@@ -92,9 +92,9 @@ export default function HomeScreen() {
 
           <View style={styles.spacer} />
 
-          <Pressable onPress={replayOnboarding} hitSlop={8} style={styles.replayLink}>
+          {/* <Pressable onPress={replayOnboarding} hitSlop={8} style={styles.replayLink}>
             <Text style={styles.replayText}>Replay the intro</Text>
-          </Pressable>
+          </Pressable> */}
 
           <SafeAreaView edges={['bottom']}>
             <Text style={styles.trustText}>
