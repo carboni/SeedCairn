@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "license": "UNLICENSED",
   "scripts": {
+    "upgrade:expo": "npx expo install expo@latest && npm upgrade && npx expo install --fix && npx expo-doctor",
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
@@ -24,7 +25,7 @@
     "@noble/hashes": "^2.3.0",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@scure/bip39": "^2.3.0",
-    "expo": "~57.0.10",
+    "expo": "^57.0.16",
     "expo-constants": "~57.0.9",
     "expo-crypto": "~57.0.1",
     "expo-dev-client": "~57.0.14",
