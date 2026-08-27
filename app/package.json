@@ -17,7 +17,9 @@
     "prep": "npm run lint && npm run compile && npm run test && npm run bundle && npx expo-doctor",
     "development": "npm run development:android && npm run development:ios",
     "development:android": "npm run prep && eas build --profile development --platform android --local",
-    "development:ios": "npm run prep && eas build --profile development --platform ios --local"
+    "development:ios": "npm run prep && eas build --profile development --platform ios --local",
+    "production": "npm run prep && eas build --auto-submit --platform android",
+    "production:local": "npm run prep && eas build --profile production --platform android --local"
   },
   "dependencies": {
     "@expo-google-fonts/archivo": "^0.4.2",
