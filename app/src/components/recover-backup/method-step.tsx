@@ -6,9 +6,10 @@ import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 type MethodStepProps = {
   onSelectTap: () => void;
   onSelectType: () => void;
+  onSelectScan: () => void;
 };
 
-export function MethodStep({ onSelectTap, onSelectType }: MethodStepProps) {
+export function MethodStep({ onSelectTap, onSelectType, onSelectScan }: MethodStepProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>How is this piece stored?</Text>
@@ -46,6 +47,24 @@ export function MethodStep({ onSelectTap, onSelectType }: MethodStepProps) {
           <View style={styles.rowText}>
             <Text style={styles.rowTitle}>Type the words</Text>
             <Text style={styles.rowSubtitle}>From a printed card or stamped metal</Text>
+          </View>
+          <SymbolView
+            name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
+            tintColor={Palette.textTertiary}
+            size={20}
+          />
+        </Pressable>
+        <Pressable onPress={onSelectScan} style={styles.row}>
+          <View style={styles.rowIcon}>
+            <SymbolView
+              name={{ ios: 'qrcode.viewfinder', android: 'qr_code_scanner', web: 'qr_code_scanner' }}
+              tintColor={Palette.action}
+              size={22}
+            />
+          </View>
+          <View style={styles.rowText}>
+            <Text style={styles.rowTitle}>Scan the code on a printed card</Text>
+            <Text style={styles.rowSubtitle}>The camera never leaves the phone</Text>
           </View>
           <SymbolView
             name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}

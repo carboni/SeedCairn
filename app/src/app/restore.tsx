@@ -11,12 +11,13 @@ import { GatherStep } from '@/components/recover-backup/gather-step';
 import { HelpSheet } from '@/components/recover-backup/help-sheet';
 import { MethodStep } from '@/components/recover-backup/method-step';
 import { PhraseStep } from '@/components/recover-backup/phrase-step';
+import { ScanStep } from '@/components/recover-backup/scan-step';
 import { TapStep } from '@/components/recover-backup/tap-step';
 import { TypeStep } from '@/components/recover-backup/type-step';
 import { MaxContentWidth, Palette } from '@/constants/theme';
 import { combineMnemonics, decodeMnemonics, type Share } from '@/lib/slip39';
 
-type Step = 'gather' | 'method' | 'tap' | 'type' | 'phrase' | 'after';
+type Step = 'gather' | 'method' | 'tap' | 'type' | 'scan' | 'phrase' | 'after';
 
 type GatheredPiece = {
   mnemonic: string;
@@ -29,6 +30,7 @@ const STEP_LABELS: Record<Step, string> = {
   method: 'YOUR PIECES',
   tap: 'YOUR PIECES',
   type: 'YOUR PIECES',
+  scan: 'YOUR PIECES',
   phrase: 'YOUR PHRASE',
   after: 'DONE',
 };
@@ -38,6 +40,7 @@ const STEP_SEGMENTS: Record<Step, number> = {
   method: 1,
   tap: 1,
   type: 1,
+  scan: 1,
   phrase: 2,
   after: 3,
 };
@@ -132,10 +135,20 @@ export default function RestoreScreen() {
             />
           )}
           {step === 'method' && (
-            <MethodStep onSelectTap={() => setStep('tap')} onSelectType={() => setStep('type')} />
+            <MethodStep
+              onSelectTap={() => setStep('tap')}
+              onSelectType={() => setStep('type')}
+              onSelectScan={() => setStep('scan')}
+            />
           )}
           {step === 'tap' && <TapStep onTagRead={(mnemonic) => addPiece(mnemonic, 'tapped card')} />}
           {step === 'type' && <TypeStep onSubmit={(mnemonic) => addPiece(mnemonic, 'typed in')} />}
+          {step === 'scan' && (
+            <ScanStep
+              onCodeScanned={(mnemonic) => addPiece(mnemonic, 'scanned code')}
+              onFallbackToType={() => setStep('type')}
+            />
+          )}
           {step === 'phrase' && words && <PhraseStep words={words} onNext={() => setStep('after')} />}
           {step === 'after' && <AfterStep onDone={() => router.back()} />}
         </View>

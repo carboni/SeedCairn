@@ -58,6 +58,12 @@
         {
           "nfcPermission": "Used to write and read the pieces of your seed phrase on NFC cards."
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Used to scan the QR code on a printed backup piece."
+        }
       ]
     ],
     "experiments": {

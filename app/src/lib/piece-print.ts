@@ -1,3 +1,5 @@
+import { buildQrSvg } from './qr';
+
 export type PiecePrintOptions = {
   personLabel: string;
   pieceNumber: number;
@@ -21,6 +23,7 @@ export function buildPieceHtml({ personLabel, pieceNumber, totalPieces, words }:
         `<div class="word"><span class="index">${i + 1}</span><span>${escapeHtml(word)}</span></div>`,
     )
     .join('');
+  const qrSvg = buildQrSvg(words.join(' '));
 
   return `<!doctype html>
 <html>
@@ -42,6 +45,27 @@ export function buildPieceHtml({ personLabel, pieceNumber, totalPieces, words }:
         text-transform: uppercase;
         color: #6a6862;
         margin: 0 0 24px;
+      }
+      .scan-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid #d8d4cb;
+      }
+      .scan-row svg {
+        flex: none;
+        width: 140px;
+        height: 140px;
+        display: block;
+      }
+      .scan-caption {
+        flex: 1;
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.5;
+        color: #6a6862;
       }
       .grid {
         display: grid;
@@ -68,6 +92,10 @@ export function buildPieceHtml({ personLabel, pieceNumber, totalPieces, words }:
   <body>
     <p class="subtitle">Piece ${pieceNumber} of ${totalPieces}</p>
     <h1>${escapeHtml(personLabel)}&rsquo;s piece</h1>
+    <div class="scan-row">
+      ${qrSvg}
+      <p class="scan-caption">Scan this in the app to enter the piece instantly during recovery — or type the words below if the code is ever damaged.</p>
+    </div>
     <div class="grid">${rows}</div>
   </body>
 </html>`;
