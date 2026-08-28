@@ -47,6 +47,25 @@ export async function writeTextToTag(text: string): Promise<void> {
   }
 }
 
+/**
+ * Waits for a tag, reads its first NDEF text record, then releases the NFC
+ * session. Rejects on cancellation, timeout, or a tag with no readable text
+ * record — see `isBenignNfcAbort` to tell the harmless cases apart from a
+ * real failure.
+ */
+export async function readTextFromTag(): Promise<string> {
+  await ensureStarted();
+  await NfcManager.requestTechnology(NfcTech.Ndef);
+  try {
+    const tag = await NfcManager.ndefHandler.getNdefMessage();
+    const record = tag?.ndefMessage?.[0];
+    if (!record) throw new Error('No NDEF text record found on that card.');
+    return Ndef.text.decodePayload(Uint8Array.from(record.payload));
+  } finally {
+    await NfcManager.cancelTechnologyRequest();
+  }
+}
+
 /** Releases any in-progress NFC session — call this on unmount / navigating away. */
 export async function cancelNfcWrite(): Promise<void> {
   if (!nfcAvailableOnPlatform()) return;
