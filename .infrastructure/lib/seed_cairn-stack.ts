@@ -24,11 +24,13 @@ export class SeedCairnStack extends Stack {
       ],
     });
 
-    // WebFrontend already registers its bucket and distribution with
-    // githubActions() internally (granting the OIDC role S3 sync / Cloudfront
-    // invalidation permissions and publishing WEB_BUCKET / WEB_DISTRIBUTIONID
-    // as GitHub Actions repo variables), so there's nothing more to wire up
-    // here beyond the OIDC role itself.
+    // https://app.seedcairn.com — the web build of the Expo app, built and deployed by .github/workflows/app.yml
+    new WebFrontend(this, 'webapp', {
+      zone,
+      domainName: 'app.seedcairn.com',
+      defaultIndex: true,
+      redirectWww: false,
+    });
 
     // Keyless access from GHA to AWS. Also publishes GHA_OIDC_ROLE as a
     // GitHub Actions repo variable.
