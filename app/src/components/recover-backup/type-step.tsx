@@ -24,21 +24,29 @@ export function TypeStep({ onSubmit }: TypeStepProps) {
         we&rsquo;ll flag it if a word can&rsquo;t belong.
       </Text>
 
-      <WordGrid words={words} onChangeWords={setWords} wordlist={SLIP39_WORDLIST} columns={3} />
-
-      <View style={styles.footerRow}>
-        <Text style={styles.wordCount}>
-          {words.filter((w) => w !== '').length} of {PIECE_WORD_COUNT}
-        </Text>
-      </View>
-      <Pressable
-        onPress={() => onSubmit(words.join(' '))}
-        disabled={!isComplete}
-        style={[styles.cta, !isComplete && styles.ctaDisabled]}>
-        <Text style={[styles.ctaText, !isComplete && styles.ctaTextDisabled]}>
-          {isComplete ? 'These 33 words check out — keep it' : 'Waiting for all 33 words'}
-        </Text>
-      </Pressable>
+      <WordGrid
+        words={words}
+        onChangeWords={setWords}
+        wordlist={SLIP39_WORDLIST}
+        columns={3}
+        footer={
+          <>
+            <View style={styles.footerRow}>
+              <Text style={styles.wordCount}>
+                {words.filter((w) => w !== '').length} of {PIECE_WORD_COUNT}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => onSubmit(words.join(' '))}
+              disabled={!isComplete}
+              style={[styles.cta, !isComplete && styles.ctaDisabled]}>
+              <Text style={[styles.ctaText, !isComplete && styles.ctaTextDisabled]}>
+                {isComplete ? 'These 33 words check out — keep it' : 'Waiting for all 33 words'}
+              </Text>
+            </Pressable>
+          </>
+        }
+      />
     </View>
   );
 }

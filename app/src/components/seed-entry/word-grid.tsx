@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
@@ -20,13 +21,15 @@ type WordGridProps = {
   wordlist: readonly string[];
   /** Chips per row — 2 for a 12/24-word BIP-39 phrase, 3 for a 33-word SLIP-39 piece. */
   columns?: 2 | 3;
+  /** Rendered below the grid, inside the same scroll view, so it's always reachable by scrolling. */
+  footer?: ReactNode;
 };
 
 function isWordInvalid(word: string, wordlist: readonly string[]) {
   return word !== '' && !wordlist.some((w) => w.startsWith(word));
 }
 
-export function WordGrid({ words, onChangeWords, wordlist, columns = 2 }: WordGridProps) {
+export function WordGrid({ words, onChangeWords, wordlist, columns = 2, footer }: WordGridProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const inputRefs = useRef<(TextInput | null)[]>([]);
@@ -120,46 +123,51 @@ export function WordGrid({ words, onChangeWords, wordlist, columns = 2 }: WordGr
     <>
       <KeyboardAwareScrollView
         style={styles.wordScroll}
-        contentContainerStyle={styles.wordGrid}
+        contentContainerStyle={styles.scrollContent}
         bottomOffset={SUGGESTION_BAR_HEIGHT}
         keyboardShouldPersistTaps="handled">
-        {words.map((word, i) => {
-          const isActive = activeIndex === i;
-          const isInvalid = isWordInvalid(word, wordlist);
-          return (
-            <View
-              key={i}
-              style={[
-                styles.wordChip,
-                columns === 3 && styles.wordChipCompact,
-                isActive && styles.wordChipActive,
-                isInvalid && styles.wordChipError,
-              ]}>
-              <Text style={styles.wordIndex}>{i + 1}</Text>
-              <TextInput
-                ref={(el) => {
-                  inputRefs.current[i] = el;
-                }}
-                value={word}
-                onChangeText={(text) => handleChangeText(i, text)}
-                onFocus={() => handleFocus(i)}
-                onBlur={handleBlur}
-                onSubmitEditing={() => advanceFrom(i)}
-                autoCapitalize="none"
-                autoCorrect={false}
-                style={[styles.wordInput, word.length > 0 && styles.wordInputWithClear]}
-              />
-              {word.length > 0 && (
-                <Pressable onPress={() => clearWord(i)} hitSlop={8} style={styles.clearButton}>
-                  <Text style={styles.clearButtonText}>✕</Text>
-                </Pressable>
-              )}
-            </View>
-          );
-        })}
+        <View style={styles.wordGrid}>
+          {words.map((word, i) => {
+            const isActive = activeIndex === i;
+            const isInvalid = isWordInvalid(word, wordlist);
+            return (
+              <View
+                key={i}
+                style={[
+                  styles.wordChip,
+                  columns === 3 && styles.wordChipCompact,
+                  isActive && styles.wordChipActive,
+                  isInvalid && styles.wordChipError,
+                ]}>
+                <Text style={styles.wordIndex}>{i + 1}</Text>
+                <TextInput
+                  ref={(el) => {
+                    inputRefs.current[i] = el;
+                  }}
+                  value={word}
+                  onChangeText={(text) => handleChangeText(i, text)}
+                  onFocus={() => handleFocus(i)}
+                  onBlur={handleBlur}
+                  onSubmitEditing={() => advanceFrom(i)}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={[styles.wordInput, word.length > 0 && styles.wordInputWithClear]}
+                />
+                {word.length > 0 && (
+                  <Pressable onPress={() => clearWord(i)} hitSlop={8} style={styles.clearButton}>
+                    <Text style={styles.clearButtonText}>✕</Text>
+                  </Pressable>
+                )}
+              </View>
+            );
+          })}
+        </View>
+        {footer}
       </KeyboardAwareScrollView>
 
-      <KeyboardStickyView enabled={activeIndex !== null && suggestions.length > 0}>
+      <KeyboardStickyView
+        style={styles.stickyBar}
+        enabled={activeIndex !== null && suggestions.length > 0}>
         {activeIndex !== null && suggestions.length > 0 && (
           <ScrollView
             horizontal
@@ -186,11 +194,20 @@ const styles = StyleSheet.create({
   wordScroll: {
     flex: 1,
   },
+  scrollContent: {
+    paddingBottom: Spacing.three,
+  },
   wordGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: Spacing.two,
     paddingBottom: Spacing.three,
+  },
+  stickyBar: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   wordChip: {
     flexDirection: 'row',
@@ -246,7 +263,6 @@ const styles = StyleSheet.create({
     color: Palette.textTertiary,
   },
   suggestionsBar: {
-    marginHorizontal: -Spacing.three,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
     backgroundColor: Palette.sunken,

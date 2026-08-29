@@ -63,22 +63,30 @@ export function EnterStep({
         <Text style={styles.lengthHint}>Most wallets use 24</Text>
       </View>
 
-      <WordGrid words={words} onChangeWords={onChangeWords} wordlist={BIP39_WORDLIST} columns={2} />
-
-      <View style={styles.footerRow}>
-        <Pressable onPress={() => onChangeWords(EXAMPLE_PHRASES[wordLength])} hitSlop={8}>
-          <Text style={styles.exampleLink}>Use an example phrase</Text>
-        </Pressable>
-        <Text style={styles.wordCount}>
-          {words.filter((w) => w !== '').length} of {wordLength}
-        </Text>
-      </View>
-      <Pressable
-        onPress={onNext}
-        disabled={!isComplete}
-        style={[styles.cta, !isComplete && styles.ctaDisabled]}>
-        <Text style={styles.ctaText}>Check my phrase</Text>
-      </Pressable>
+      <WordGrid
+        words={words}
+        onChangeWords={onChangeWords}
+        wordlist={BIP39_WORDLIST}
+        columns={2}
+        footer={
+          <>
+            <View style={styles.footerRow}>
+              <Pressable onPress={() => onChangeWords(EXAMPLE_PHRASES[wordLength])} hitSlop={8}>
+                <Text style={styles.exampleLink}>Use an example phrase</Text>
+              </Pressable>
+              <Text style={styles.wordCount}>
+                {words.filter((w) => w !== '').length} of {wordLength}
+              </Text>
+            </View>
+            <Pressable
+              onPress={onNext}
+              disabled={!isComplete}
+              style={[styles.cta, !isComplete && styles.ctaDisabled]}>
+              <Text style={styles.ctaText}>Check my phrase</Text>
+            </Pressable>
+          </>
+        }
+      />
     </View>
   );
 }
