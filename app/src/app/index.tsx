@@ -6,11 +6,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CairnMark } from '@/components/cairn-mark';
 import { ExternalLink } from '@/components/external-link';
 import { ArchivoFonts, MaxContentWidth, Palette, Spacing } from '@/constants/theme';
-import { useOnboarding } from '@/contexts/onboarding-context';
+// import { useOnboarding } from '@/contexts/onboarding-context';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { replayOnboarding } = useOnboarding();
+  // const { replayOnboarding } = useOnboarding();
 
   return (
     <View style={styles.container}>
