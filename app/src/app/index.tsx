@@ -104,7 +104,7 @@ export default function HomeScreen() {
               <ExternalLink
                 href="https://github.com/carboni/seedcairn"
                 style={styles.trustLink}>
-                github.com/carboni/seed-phrase-backup
+                github.com/carboni/seedcairn
               </ExternalLink>
             </Text>
           </SafeAreaView>
