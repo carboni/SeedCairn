@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CairnMark } from '@/components/cairn-mark';
@@ -24,7 +24,7 @@ export default function HomeScreen() {
           <Text style={styles.heroSubtitle}>Where would you like to start?</Text>
         </View>
 
-        <View style={styles.sheet}>
+        <ScrollView style={styles.sheet} contentContainerStyle={styles.sheetContent}>
           <Pressable
             onPress={() => router.push('/new-backup')}
             style={({ pressed }) => [styles.card, styles.primaryCard, pressed && styles.pressed]}>
@@ -108,7 +108,7 @@ export default function HomeScreen() {
               </ExternalLink>
             </Text>
           </SafeAreaView>
-        </View>
+        </ScrollView>
       </SafeAreaView>
     </View>
   );
@@ -162,6 +162,9 @@ const styles = StyleSheet.create({
     backgroundColor: Palette.stoneSheet,
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
+  },
+  sheetContent: {
+    flexGrow: 1,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.four,
     gap: Spacing.three,

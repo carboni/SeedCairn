@@ -1,3 +1,5 @@
+import '@/lib/crypto-polyfill';
+
 import {
   Archivo_400Regular,
   Archivo_500Medium,

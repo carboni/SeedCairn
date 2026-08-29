@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
@@ -12,7 +12,7 @@ const MARK_OPACITIES: [number, number, number, number, number] = [0.618, 0.618, 
 
 export function AfterStep({ onDone }: AfterStepProps) {
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.ringWrap}>
         <RecoveryRing size={132} stoneOpacities={MARK_OPACITIES} seedColor={Palette.ochre} />
       </View>
@@ -46,13 +46,13 @@ export function AfterStep({ onDone }: AfterStepProps) {
       <Pressable onPress={onDone} style={styles.cta}>
         <Text style={styles.ctaText}>Done</Text>
       </Pressable>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.two,
     paddingBottom: Spacing.four,

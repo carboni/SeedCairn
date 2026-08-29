@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
@@ -10,7 +10,7 @@ type LengthStepProps = {
 
 export function LengthStep({ wordLength, onChangeWordLength, onNext }: LengthStepProps) {
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>How many words does your wallet want?</Text>
       <Text style={styles.body}>
         Open your wallet&rsquo;s set-up screen and look for &ldquo;import&rdquo; or
@@ -48,13 +48,13 @@ export function LengthStep({ wordLength, onChangeWordLength, onNext }: LengthSte
       <Pressable onPress={onNext} style={styles.cta}>
         <Text style={styles.ctaText}>Make my seed phrase</Text>
       </Pressable>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.three,
     paddingBottom: Spacing.four,

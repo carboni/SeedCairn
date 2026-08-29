@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, Vibration, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, Vibration, View } from 'react-native';
 import Svg, { Circle, Ellipse, Path, Rect } from 'react-native-svg';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
@@ -85,7 +85,7 @@ export function TapStep({ onTagRead }: TapStepProps) {
   const statusText = NFC_STATUS_TEXT[nfcStatus];
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Hold the card to the back of your phone</Text>
       <Text style={styles.body}>Keep it still until it buzzes. We&rsquo;ll tell you which piece it is.</Text>
       {statusText && <Text style={styles.status}>{statusText}</Text>}
@@ -94,13 +94,13 @@ export function TapStep({ onTagRead }: TapStepProps) {
         <TapIllustration />
       </View>
       <View style={styles.spacer} />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.three,
     paddingBottom: Spacing.four,

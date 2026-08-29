@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
@@ -21,7 +21,7 @@ export function PeopleStep({ people, onChangePeople, onNext, body = DEFAULT_BODY
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Who will hold a piece?</Text>
       <Text style={styles.body}>{body}</Text>
 
@@ -60,13 +60,13 @@ export function PeopleStep({ people, onChangePeople, onNext, body = DEFAULT_BODY
       <Pressable onPress={onNext} style={styles.cta}>
         <Text style={styles.ctaText}>Make the five pieces</Text>
       </Pressable>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.three,
     paddingBottom: Spacing.four,

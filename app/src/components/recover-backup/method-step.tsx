@@ -1,5 +1,5 @@
 import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
@@ -11,7 +11,7 @@ type MethodStepProps = {
 
 export function MethodStep({ onSelectTap, onSelectType, onSelectScan }: MethodStepProps) {
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>How is this piece stored?</Text>
       <Text style={styles.body}>
         Pieces can be mixed — a tapped card and two typed ones rebuild the phrase just as well.
@@ -79,13 +79,13 @@ export function MethodStep({ onSelectTap, onSelectType, onSelectScan }: MethodSt
       <Text style={styles.footnote}>
         A single piece can&rsquo;t reveal anything on its own — not even how long your phrase is.
       </Text>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.three,
     paddingBottom: Spacing.four,

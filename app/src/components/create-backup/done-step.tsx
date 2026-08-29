@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle, Ellipse } from 'react-native-svg';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
@@ -39,7 +39,7 @@ export function DoneStep({
   trustText = DEFAULT_TRUST_TEXT,
 }: DoneStepProps) {
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.illustrationWrap}>
         <CompletedCairnIllustration />
       </View>
@@ -64,13 +64,13 @@ export function DoneStep({
       <Pressable onPress={onDone} style={styles.cta}>
         <Text style={styles.ctaText}>Done</Text>
       </Pressable>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.two,
     paddingBottom: Spacing.four,

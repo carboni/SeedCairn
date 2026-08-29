@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
@@ -30,7 +30,7 @@ export function GatherStep({ pieces, required, error, onAddPiece, onReveal, onOp
       : 'pieces so far';
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Gather any three pieces</Text>
       <Text style={styles.body}>
         It doesn&rsquo;t matter which three, or how they reach you. The other two stay where they
@@ -75,13 +75,13 @@ export function GatherStep({ pieces, required, error, onAddPiece, onReveal, onOp
       <Pressable onPress={onOpenHelp} hitSlop={8} style={styles.helpLink}>
         <Text style={styles.helpLinkText}>I can&rsquo;t get three pieces</Text>
       </Pressable>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.three,
     paddingBottom: Spacing.four,

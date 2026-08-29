@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, Vibration, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, Vibration, View } from 'react-native';
 import Svg, { Circle, Ellipse, Path, Rect } from 'react-native-svg';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
@@ -100,7 +100,7 @@ export function WriteStep({
   const statusText = NFC_STATUS_TEXT[nfcStatus];
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.counter}>
         PIECE {pieceNumber} OF {totalPieces}
       </Text>
@@ -129,13 +129,13 @@ export function WriteStep({
           <Text style={styles.altButtonText}>Stamp into metal</Text>
         </Pressable>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.three,
     paddingBottom: Spacing.four,

@@ -1,6 +1,6 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useState } from 'react';
-import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
@@ -25,7 +25,7 @@ export function ScanStep({ onCodeScanned, onFallbackToType }: ScanStepProps) {
 
   if (!permission.granted) {
     return (
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Camera access needed</Text>
         <Text style={styles.body}>
           SeedCairn only uses the camera to read the QR code on a printed piece — nothing is
@@ -42,12 +42,12 @@ export function ScanStep({ onCodeScanned, onFallbackToType }: ScanStepProps) {
         <Pressable onPress={onFallbackToType} hitSlop={8} style={styles.fallbackLink}>
           <Text style={styles.fallbackLinkText}>Type the words instead</Text>
         </Pressable>
-      </View>
+      </ScrollView>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.body}>Point the camera at the code on the printed card.</Text>
 
       <View style={styles.cameraWrap}>
@@ -68,7 +68,7 @@ export function ScanStep({ onCodeScanned, onFallbackToType }: ScanStepProps) {
       <Pressable onPress={onFallbackToType} hitSlop={8} style={styles.fallbackLink}>
         <Text style={styles.fallbackLinkText}>The code is damaged — type the words</Text>
       </Pressable>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -76,7 +76,7 @@ const CAMERA_SIZE = 230;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: Palette.stoneDark,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.three,
