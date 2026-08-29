@@ -15,6 +15,7 @@ export const Palette = {
   action: '#2f5f72',
   actionPress: '#295465',
   ochre: '#d8a75a',
+  error: '#b23a2e',
 
   textOnDark: '#f6f4ef',
   textOnDarkMuted: 'rgba(246,244,239,0.66)',

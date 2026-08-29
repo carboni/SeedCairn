@@ -44,7 +44,17 @@ export default function NewBackupScreen() {
   const router = useRouter();
   const [step, setStep] = useState<Step>('enter');
   const [wordLength, setWordLength] = useState<12 | 24>(24);
-  const [words, setWords] = useState<string[]>([]);
+  // Always sized to the max (24) so that toggling 24 -> 12 -> 24 doesn't
+  // discard anything typed into slots 13-24.
+  const [allWords, setAllWords] = useState<string[]>(Array(24).fill(''));
+  const words = useMemo(() => allWords.slice(0, wordLength), [allWords, wordLength]);
+  const setWords = (visibleWords: string[]) => {
+    setAllWords((prev) => {
+      const next = [...prev];
+      for (let i = 0; i < wordLength; i++) next[i] = visibleWords[i] ?? '';
+      return next;
+    });
+  };
   const [people, setPeople] = useState<string[]>(Array(PEOPLE_COUNT).fill(''));
   const [writeIndex, setWriteIndex] = useState(0);
 

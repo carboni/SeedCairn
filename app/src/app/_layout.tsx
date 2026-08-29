@@ -9,6 +9,7 @@ import {
 import { useFonts } from 'expo-font';
 import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { Palette } from '@/constants/theme';
@@ -87,10 +88,12 @@ function AppGate() {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider value={AppNavigationTheme}>
-      <OnboardingProvider>
-        <AppGate />
-      </OnboardingProvider>
-    </ThemeProvider>
+    <KeyboardProvider>
+      <ThemeProvider value={AppNavigationTheme}>
+        <OnboardingProvider>
+          <AppGate />
+        </OnboardingProvider>
+      </ThemeProvider>
+    </KeyboardProvider>
   );
 }
