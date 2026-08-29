@@ -1,0 +1,65 @@
+name: app
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      # Build when there are changes in the directory that holds the component,
+      # or when this workflow file is changed
+      - "app/**"
+      - ".github/workflows/app.yml"
+  schedule:
+    # A weekly build to pick up updates to the base container image
+    # A weekday at mid-day - when someone is likely to be working (avoid bank holidays)
+    - cron: "0 13 * * 3"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: App
+    runs-on: ubuntu-latest
+    env:
+      bucket: ${{ vars.WEBAPP_BUCKET }}
+      distributionId: ${{ vars.WEBAPP_DISTRIBUTIONID }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.GHA_OIDC_ROLE }}
+          aws-region: eu-west-2
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ${{ github.workflow }}/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ github.workflow }}
+        run: npm ci
+
+      - name: Export web build
+        working-directory: ${{ github.workflow }}
+        run: npx expo export --platform web
+
+      - name: Commit hash
+        working-directory: ${{ github.workflow }}
+        run: |
+          echo $(git rev-parse --short HEAD) > dist/COMMIT_HASH
+
+      - name: Upload to s3
+        working-directory: ${{ github.workflow }}
+        run: |
+          cd dist
+          aws s3 sync --delete . s3://${bucket}/
+
+      - name: Invalidate Cloudfront
+        working-directory: ${{ github.workflow }}
+        run: |
+          aws cloudfront create-invalidation --distribution-id $distributionId --paths '/*'
