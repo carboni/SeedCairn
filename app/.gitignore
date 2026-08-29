@@ -33,6 +33,8 @@ yarn-error.*
 .env*.local
 
 # EAS build artifacts
+/ios/
+/android/
 *.apk
 *.aab
 *.ipa
