@@ -15,3 +15,12 @@ app/*.apk
 app/*.aab
 app/build-*.tar.gz
 app/SeedCairn.app
+
+# Iglore local bumph
+app/.DS_Store
+app/.claude
+app/AGENTS.md
+app/CLAUDE.md
+app/README.md
+app/.vscode
+app/.expo
