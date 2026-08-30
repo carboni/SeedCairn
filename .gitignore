@@ -4,3 +4,5 @@ node_modules
 *.ipa
 *.aab
 *.tar.gz
+
+/eas-inspect/
