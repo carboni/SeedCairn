@@ -1,0 +1,17 @@
+# Only include the app directory when uploading files to EAS
+
+# Ignore everything...
+*
+
+# ...except the app directory
+# see: https://betterstack.com/community/questions/git-exclude-folder-but-include-specific-subfolder/
+!app
+!app/**
+
+# Ignore prebuild output and local development builds
+app/android
+app/ios
+app/*.apk
+app/*.aab
+app/build-*.tar.gz
+app/SeedCairn.app
