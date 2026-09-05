@@ -63,6 +63,11 @@ export function recoverSecret(shares: ByteShare[], threshold: number): Uint8Arra
     return shares[0].value;
   }
 
+  const shareLength = shares[0].value.length;
+  if (shares.some((s) => s.value.length !== shareLength)) {
+    throw new Error('Shares have mismatched lengths — they do not belong to the same backup.');
+  }
+
   const points = new Map<number, Uint8Array>();
   for (const s of shares) points.set(s.index, s.value);
 

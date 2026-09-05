@@ -1,6 +1,7 @@
 import { entropyToMnemonic } from '@scure/bip39';
 import { wordlist as BIP39_WORDLIST } from '@scure/bip39/wordlists/english.js';
 import { useRouter } from 'expo-router';
+import { usePreventScreenCapture } from 'expo-screen-capture';
 import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -55,6 +56,9 @@ function decodeSinglePiece(mnemonic: string): Share {
 }
 
 export default function RestoreScreen() {
+  // This whole flow reads backup pieces and shows the recovered phrase — block screenshots and
+  // screen recording, and blank the app-switcher thumbnail, for as long as it's on screen.
+  usePreventScreenCapture();
   const router = useRouter();
   const [step, setStep] = useState<Step>('gather');
   const [pieces, setPieces] = useState<GatheredPiece[]>([]);

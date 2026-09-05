@@ -2,7 +2,8 @@ import { generateMnemonic, mnemonicToEntropy } from '@scure/bip39';
 import { wordlist as BIP39_WORDLIST } from '@scure/bip39/wordlists/english.js';
 import { useRouter } from 'expo-router';
 import * as Print from 'expo-print';
-import { useMemo, useState } from 'react';
+import { usePreventScreenCapture } from 'expo-screen-capture';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -61,6 +62,9 @@ const DONE_TRUST_TEXT =
   'We’ll nudge you in a year to run a drill.';
 
 export default function GenerateBackupScreen() {
+  // This whole flow shows the real phrase and the raw backup pieces — block screenshots and
+  // screen recording, and blank the app-switcher thumbnail, for as long as it's on screen.
+  usePreventScreenCapture();
   const router = useRouter();
   const [step, setStep] = useState<Step>('length');
   const [wordLength, setWordLength] = useState<12 | 24>(24);
@@ -68,6 +72,7 @@ export default function GenerateBackupScreen() {
   const [people, setPeople] = useState<string[]>(Array(PEOPLE_COUNT).fill(''));
   const [writeIndex, setWriteIndex] = useState(0);
   const [whereFromOpen, setWhereFromOpen] = useState(false);
+  const [pieces, setPieces] = useState<string[] | null>(null);
 
   const personLabel = (index: number) => people[index]?.trim() || `Person ${index + 1}`;
 
@@ -81,10 +86,14 @@ export default function GenerateBackupScreen() {
     setStep('phrase');
   };
 
-  // Each backup piece is a full SLIP-39 mnemonic; the split is randomized, so this only
-  // re-runs when the generated phrase changes, keeping every piece stable across navigation.
-  const pieces = useMemo<string[] | null>(() => {
-    if (words.length === 0) return null;
+  // The split is randomized (fresh identifier and random shares each call), so this must run
+  // exactly once per phrase and then stay frozen in state — recomputing while pieces are
+  // already written out would silently produce a mixed, unrecoverable set.
+  const finalizePieces = () => {
+    if (words.length === 0) {
+      setPieces(null);
+      return;
+    }
     try {
       const entropy = mnemonicToEntropy(words.join(' '), BIP39_WORDLIST);
       const [group] = generateMnemonics(
@@ -92,11 +101,12 @@ export default function GenerateBackupScreen() {
         [{ memberThreshold: MEMBER_THRESHOLD, memberCount: PEOPLE_COUNT }],
         entropy,
       );
-      return group;
+      setPieces(group);
     } catch {
-      return null;
+      setPieces(null);
     }
-  }, [words]);
+    setWriteIndex(0);
+  };
 
   const handleHeaderBack = () => {
     if (step === 'length') {
@@ -175,7 +185,10 @@ export default function GenerateBackupScreen() {
             <PeopleStep
               people={people}
               onChangePeople={setPeople}
-              onNext={() => setStep('write')}
+              onNext={() => {
+                finalizePieces();
+                setStep('write');
+              }}
               body={PEOPLE_STEP_BODY}
             />
           )}

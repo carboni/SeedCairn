@@ -2,6 +2,7 @@ import { mnemonicToEntropy } from '@scure/bip39';
 import { wordlist as BIP39_WORDLIST } from '@scure/bip39/wordlists/english.js';
 import { useRouter } from 'expo-router';
 import * as Print from 'expo-print';
+import { usePreventScreenCapture } from 'expo-screen-capture';
 import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -41,6 +42,9 @@ const PEOPLE_COUNT = 5;
 const MEMBER_THRESHOLD = 3;
 
 export default function NewBackupScreen() {
+  // This whole flow shows the real phrase and the raw backup pieces — block screenshots and
+  // screen recording, and blank the app-switcher thumbnail, for as long as it's on screen.
+  usePreventScreenCapture();
   const router = useRouter();
   const [step, setStep] = useState<Step>('enter');
   const [wordLength, setWordLength] = useState<12 | 24>(24);
@@ -57,12 +61,14 @@ export default function NewBackupScreen() {
   };
   const [people, setPeople] = useState<string[]>(Array(PEOPLE_COUNT).fill(''));
   const [writeIndex, setWriteIndex] = useState(0);
+  const [pieces, setPieces] = useState<string[] | null>(null);
 
   const personLabel = (index: number) => people[index]?.trim() || `Person ${index + 1}`;
 
-  // Each backup piece is a full SLIP-39 mnemonic; the split is randomized, so this only
-  // re-runs when the underlying phrase changes, keeping every piece stable across navigation.
-  const pieces = useMemo<string[] | null>(() => {
+  // The split is randomized (fresh identifier and random shares each call), so this must run
+  // exactly once per phrase and then stay frozen in state — recomputing while pieces are
+  // already written out would silently produce a mixed, unrecoverable set.
+  const finalizePieces = () => {
     try {
       const entropy = mnemonicToEntropy(words.join(' '), BIP39_WORDLIST);
       const [group] = generateMnemonics(
@@ -70,11 +76,12 @@ export default function NewBackupScreen() {
         [{ memberThreshold: MEMBER_THRESHOLD, memberCount: PEOPLE_COUNT }],
         entropy,
       );
-      return group;
+      setPieces(group);
     } catch {
-      return null;
+      setPieces(null);
     }
-  }, [words]);
+    setWriteIndex(0);
+  };
 
   const handleHeaderBack = () => {
     if (step === 'enter') {
@@ -146,7 +153,14 @@ export default function NewBackupScreen() {
             />
           )}
           {step === 'people' && (
-            <PeopleStep people={people} onChangePeople={setPeople} onNext={() => setStep('write')} />
+            <PeopleStep
+              people={people}
+              onChangePeople={setPeople}
+              onNext={() => {
+                finalizePieces();
+                setStep('write');
+              }}
+            />
           )}
           {step === 'write' && pieces && (
             <WriteStep
