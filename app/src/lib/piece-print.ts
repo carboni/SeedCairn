@@ -1,3 +1,6 @@
+import { File, Paths } from 'expo-file-system';
+import * as Print from 'expo-print';
+
 import { buildQrSvg } from './qr';
 
 export type PiecePrintOptions = {
@@ -119,7 +122,7 @@ export function buildPieceHtml({
     <div class="header">
       ${qrSvg}
       <div class="header-text">
-        <p class="subtitle">Piece ${pieceNumber} of ${totalPieces} · ${memberThreshold} pieces are requred for recovery</p>
+        <p class="subtitle">Piece ${pieceNumber} of ${totalPieces} · ${memberThreshold} pieces are required for recovery</p>
         <h1>${escapeHtml(personLabel)}&rsquo;s piece</h1>
         <p class="scan-caption">Scan the code in the app to enter this piece instantly during recovery — or type the words below if the code is ever damaged.</p>
       </div>
@@ -128,4 +131,24 @@ export function buildPieceHtml({
     <div class="grid">${rows}</div>
   </body>
 </html>`;
+}
+
+/** Suggested filename for a piece's PDF, e.g. "Piece 2 of 5.pdf". */
+export function pieceFileName(pieceNumber: number, totalPieces: number): string {
+  return `Piece ${pieceNumber} of ${totalPieces}.pdf`;
+}
+
+/**
+ * Renders `html` to a PDF and opens the system print/share sheet. expo-print takes a
+ * saved PDF's suggested filename ("Save to Files", etc.) from the file's own name on
+ * disk, not from anything in the HTML — printing HTML directly always shows up as the
+ * WebView's generic "Document". So this renders to a temporary file first, renames it to
+ * `filename`, then prints from that file instead.
+ */
+export async function printPieceAsPdf(html: string, filename: string): Promise<void> {
+  const { uri } = await Print.printToFileAsync({ html });
+  const destination = new File(Paths.cache, filename);
+  if (destination.exists) destination.delete();
+  await new File(uri).move(destination);
+  await Print.printAsync({ uri: destination.uri });
 }

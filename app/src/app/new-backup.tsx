@@ -1,7 +1,6 @@
 import { mnemonicToEntropy } from '@scure/bip39';
 import { wordlist as BIP39_WORDLIST } from '@scure/bip39/wordlists/english.js';
 import { useRouter } from 'expo-router';
-import * as Print from 'expo-print';
 import { usePreventScreenCapture } from 'expo-screen-capture';
 import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -15,7 +14,7 @@ import { ProgressHeader } from '@/components/create-backup/progress-header';
 import { StampStep } from '@/components/create-backup/stamp-step';
 import { WriteStep } from '@/components/create-backup/write-step';
 import { MaxContentWidth, Palette } from '@/constants/theme';
-import { buildPieceHtml } from '@/lib/piece-print';
+import { buildPieceHtml, pieceFileName, printPieceAsPdf } from '@/lib/piece-print';
 import { generateMnemonics } from '@/lib/slip39';
 
 type Step = 'enter' | 'check' | 'people' | 'write' | 'stamp' | 'done';
@@ -122,7 +121,7 @@ export default function NewBackupScreen() {
       words: pieces[writeIndex].split(' '),
     });
     try {
-      await Print.printAsync({ html });
+      await printPieceAsPdf(html, pieceFileName(writeIndex + 1, PEOPLE_COUNT));
     } catch {
       // User cancelled the print dialog, or no print service is available — nothing to do.
     }
