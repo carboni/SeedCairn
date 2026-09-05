@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
@@ -25,11 +26,19 @@ type WordGridProps = {
   footer?: ReactNode;
 };
 
-function isWordInvalid(word: string, wordlist: readonly string[]) {
-  return word !== '' && !wordlist.some((w) => w.startsWith(word));
+function isWordInvalid(word: string, wordlist: readonly string[], isActive: boolean) {
+  if (word === '') return false;
+  if (!wordlist.some((w) => w.startsWith(word))) return true;
+  // While the field is still being typed into, an incomplete-but-valid
+  // prefix (e.g. "wor") isn't an error yet. Once it's left unfinished —
+  // the field loses focus without ever becoming an exact match — flag it,
+  // so a stray incomplete word doesn't silently block the CTA with no
+  // visible indicator of which field is the problem.
+  return !isActive && !wordlist.includes(word);
 }
 
 export function WordGrid({ words, onChangeWords, wordlist, columns = 2, footer }: WordGridProps) {
+  const insets = useSafeAreaInsets();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const inputRefs = useRef<(TextInput | null)[]>([]);
@@ -46,7 +55,14 @@ export function WordGrid({ words, onChangeWords, wordlist, columns = 2, footer }
 
   const advanceFrom = (index: number) => {
     const nextEmpty = words.findIndex((w, i) => i > index && w === '');
-    focusIndex(nextEmpty !== -1 ? nextEmpty : Math.min(index + 1, words.length - 1));
+    if (nextEmpty !== -1) {
+      focusIndex(nextEmpty);
+    } else {
+      // Nothing left ahead to fill — drop focus (and dismiss the keyboard)
+      // rather than re-focusing the field we just finished, which would
+      // just re-show a suggestion list matching the word already there.
+      inputRefs.current[index]?.blur();
+    }
   };
 
   const handleFocus = (index: number) => {
@@ -129,7 +145,7 @@ export function WordGrid({ words, onChangeWords, wordlist, columns = 2, footer }
         <View style={styles.wordGrid}>
           {words.map((word, i) => {
             const isActive = activeIndex === i;
-            const isInvalid = isWordInvalid(word, wordlist);
+            const isInvalid = isWordInvalid(word, wordlist, isActive);
             return (
               <View
                 key={i}
@@ -166,7 +182,7 @@ export function WordGrid({ words, onChangeWords, wordlist, columns = 2, footer }
       </KeyboardAwareScrollView>
 
       <KeyboardStickyView
-        style={styles.stickyBar}
+        style={[styles.stickyBar, { bottom: -insets.bottom }]}
         enabled={activeIndex !== null && suggestions.length > 0}>
         {activeIndex !== null && suggestions.length > 0 && (
           <ScrollView
@@ -195,7 +211,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: Spacing.three,
+    paddingBottom: Spacing.four,
   },
   wordGrid: {
     flexDirection: 'row',

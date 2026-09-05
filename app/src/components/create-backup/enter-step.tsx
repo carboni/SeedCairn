@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.three,
-    paddingBottom: Spacing.four,
   },
   title: {
     fontFamily: ArchivoFonts.bold,
