@@ -18,8 +18,10 @@
     "development": "npm run development:android && npm run development:ios",
     "development:android": "npm run prep && eas build --profile development --platform android --local",
     "development:ios": "npm run prep && eas build --profile development --platform ios --local",
+    "preview": "npm run prep && eas build --profile preview --platform android",
     "production": "npm run prep && eas build --auto-submit --platform android",
-    "production:local": "npm run prep && eas build --profile production --platform android --local"
+    "production:local": "npm run prep && eas build --profile production --platform android --local",
+    "inspect": "rm -rf ../eas-inspect && eas build:inspect --platform android --stage archive --output ../eas-inspect"
   },
   "dependencies": {
     "@expo-google-fonts/archivo": "^0.4.2",
