@@ -43,12 +43,15 @@ the seed.
 
 ## Status
 
-Onboarding, home screen, and the full create-backup flow (enter → check →
-choose people → write pieces → done) are built and match the draft closely.
-**Cryptography and NFC are placeholders** — word entry/validation, the "write
-to NFC" step, and print/metal export don't do anything real yet; this was
-built to walk the UX end to end before wiring up the real crypto/NFC library.
-The recover flow isn't built yet (the draft doesn't prototype it either).
+Onboarding, home screen, the full create-backup flow (generate or enter a
+phrase → check → choose people → write pieces → done), and the recover flow
+(gather pieces by NFC tap, typed words, or QR scan → rebuild the phrase →
+done) are built. **Cryptography and NFC are real, not placeholders** — word
+entry/validation uses the actual BIP-39/SLIP-39 wordlists, NFC read/write
+calls the real library, and the split/recombine logic is the from-spec
+SLIP-39 implementation below (see the cryptographic review). An annual
+backup-drill reminder notification is also implemented
+(`src/lib/backup-drill-reminder.ts`).
 
 ## App
 
@@ -234,15 +237,16 @@ dependency.
     package (which produced the identical "wrong" result with empty
     passphrase) isolated it to the test harness, not the implementation.
 
-Not yet wired into the UI — `enter-step`/`check-step` in the create-backup
-flow still use placeholder validation and a hardcoded sample wordlist. That
-wiring, plus the BIP-39 side via `@scure/bip39`, is the next step.
+Wired into both flows — the create-backup screens (`new-backup.tsx`,
+`generate-backup.tsx`) and the recover screen (`restore.tsx`) call
+`generateMnemonics`/`combineMnemonics` directly, with word entry and
+validation against the real BIP-39 wordlist via `@scure/bip39`.
 
 ### Development build
 
 **Installed**: `expo-dev-client`, `react-native-nfc-manager` (config plugin
-wired in `app.json`), `@scure/bip39`. Expo Go can no longer run this app
-now that a native module (NFC) is configured.
+wired in `app.json`), `@scure/bip39`, `expo-screen-capture`. Expo Go can no
+longer run this app now that a native module (NFC) is configured.
 
 **Not done yet** (needs a real device/Xcode/Android Studio, which this
 environment doesn't have): actually building the dev client. Once ready:
@@ -268,13 +272,10 @@ reinventing for the actual build pipeline:
 
 ### Next steps
 
-- Wire the now-implemented BIP-39/SLIP-39 logic into the create-backup flow
-  (replacing the placeholder word-entry validation and example phrase in
-  `enter-step`/`check-step`)
-- Build the dev client (`expo prebuild` + `expo run:ios`/`run:android`) and
-  wire real NFC read/write into the write step
-- Recover flow (no draft prototype to follow yet — will need its own design
-  pass, or can mirror the create flow's steps in reverse)
+- Build the dev client (`expo prebuild` + `expo run:ios`/`run:android`) —
+  NFC read/write already call the real library, this just needs a real
+  device/Xcode/Android Studio, which this environment doesn't have, to
+  actually build and test it
 - Web-specific behavior described above (print-only write step, trust
   notice, maybe PWA offline support)
 - Layered iOS Icon Composer upgrade (optional, see App icons above)
@@ -324,6 +325,32 @@ The app defaults to the extendable flag. That is supported by python-shamir-mnem
 Two things this review cannot tell you: the build on your phone must actually come from this source, and your wallet's BIP-39 passphrase, if you use one, is not backed up by these pieces. Before trusting a real set, do a recovery drill with two different three-piece combinations read back from the actual cards.
 
 Sources: [Trezor firmware changelog](https://github.com/trezor/trezor-firmware/blob/main/core/CHANGELOG.md), [Trezor SLIP-39 docs](https://docs.trezor.io/trezor-firmware/core/misc/slip0039.html)
+
+#### Follow-up (5 Sep 2026)
+
+Findings 1, 2, 4, and 6 are fixed (commit 6594830259df1c055f0fb1868da03e72577cfa11):
+
+- **Re-split producing a mixed set (1)**: shares are now computed once and
+  frozen into state when leaving the people step, instead of a `useMemo`
+  derived from the phrase (`new-backup.tsx`, `generate-backup.tsx`).
+- **No capture protection (2)**: `expo-screen-capture` now blocks
+  screenshots/recording and blanks the app-switcher thumbnail on the
+  create-backup and recover screens.
+- **Unchecked share lengths (4)**: `shamir.ts`'s `recoverSecret` now rejects
+  mismatched share lengths before interpolating.
+- **Placeholder claim (6)**: the Status and SLIP-39 sections above now
+  reflect that crypto and NFC are real and wired into both flows, not
+  placeholders.
+
+Finding 3 (print spooler caching) is operational, not code — noted above as
+guidance. Finding 5 (a hostile iteration exponent causing a multi-hour
+recovery hang) is left as-is on purpose: capping it would also reject a
+legitimately-created backup made with a deliberately higher iteration
+exponent for stronger passphrase resistance, and the failure mode is a hang,
+not exposed keys.
+
+The physical note to keep with the pieces: **"SLIP-39, 3-of-5, extendable,
+entropy not phrase."**
 
 ## Development
 
