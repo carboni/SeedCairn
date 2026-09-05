@@ -118,6 +118,7 @@ export default function NewBackupScreen() {
       personLabel: personLabel(writeIndex),
       pieceNumber: writeIndex + 1,
       totalPieces: PEOPLE_COUNT,
+      memberThreshold: MEMBER_THRESHOLD,
       words: pieces[writeIndex].split(' '),
     });
     try {
