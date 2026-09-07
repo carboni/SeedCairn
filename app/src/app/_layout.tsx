@@ -51,6 +51,7 @@ function RootNavigator() {
 
       <Stack.Protected guard={hasCompletedOnboarding}>
         <Stack.Screen name="index" />
+        <Stack.Screen name="about" />
         <Stack.Screen
           name="new-backup"
           options={{ presentation: 'modal', gestureEnabled: false }}

@@ -19,6 +19,18 @@ export default function HomeScreen() {
           <View style={styles.brandRow}>
             <CairnMark size={19} />
             <Text style={styles.brandText}>SeedCairn</Text>
+            <View style={styles.brandSpacer} />
+            <Pressable
+              onPress={() => router.push('/about')}
+              hitSlop={8}
+              accessibilityLabel="About this app"
+              style={styles.infoButton}>
+              <SymbolView
+                name={{ ios: 'info.circle', android: 'info', web: 'info' }}
+                tintColor="rgba(246,244,239,.66)"
+                size={22}
+              />
+            </Pressable>
           </View>
           <Text style={styles.hero}>keep it together</Text>
           <Text style={styles.heroSubtitle}>Where would you like to start?</Text>
@@ -141,6 +153,18 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 1.3,
     color: Palette.headerTextOnDark,
+  },
+  brandSpacer: {
+    flex: 1,
+  },
+  infoButton: {
+    width: 44,
+    height: 44,
+    marginVertical: -10,
+    marginRight: -12,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   hero: {
     fontFamily: ArchivoFonts.bold,

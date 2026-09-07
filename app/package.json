@@ -5,6 +5,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "upgrade:expo": "npx expo install expo@latest && npm upgrade && npx expo install --fix && npx expo-doctor",
+    "postinstall": "npm run build-info",
+    "build-info": "node ./scripts/generate-build-info.js",
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
@@ -14,7 +16,7 @@
     "compile": "tsc",
     "test": "jest",
     "bundle": "npx expo export --platform android --output-dir /tmp/expo-export-check",
-    "prep": "npm run lint && npm run compile && npm run test && npm run bundle && npx expo-doctor",
+    "prep": "npm run build-info && npm run lint && npm run compile && npm run test && npm run bundle && npx expo-doctor",
     "development": "npm run development:android && npm run development:ios",
     "development:android": "npm run prep && eas build --profile development --platform android --local",
     "development:ios": "npm run prep && eas build --profile development --platform ios --local",
