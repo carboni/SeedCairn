@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -167,6 +167,7 @@ export function WordGrid({ words, onChangeWords, wordlist, columns = 2, footer }
                   onSubmitEditing={() => advanceFrom(i)}
                   autoCapitalize="none"
                   autoCorrect={false}
+                  keyboardType={Platform.OS === 'android' ? 'visible-password' : 'default'}
                   style={[styles.wordInput, word.length > 0 && styles.wordInputWithClear]}
                 />
                 {word.length > 0 && (

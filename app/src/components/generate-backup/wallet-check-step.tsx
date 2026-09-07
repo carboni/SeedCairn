@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { ArchivoFonts, Palette, Spacing } from '@/constants/theme';
 
@@ -88,6 +88,7 @@ export function WalletCheckStep({ words, onNext }: WalletCheckStepProps) {
             placeholderTextColor={Palette.textTertiary}
             autoCapitalize="none"
             autoCorrect={false}
+            keyboardType={Platform.OS === 'android' ? 'visible-password' : 'default'}
             editable={!isDone}
             style={styles.textInput}
           />
